@@ -43,7 +43,7 @@ To add one to the menu, add one line to `NAV_TOP` in `src/config.ts` (plus a lab
   F H S B appear together then spread while the rest of the name wipes open. 2600: the window opens and the logo stays.
   3400: the instruments leave right, the full name leaves left. 4100: the big FHSB turns purple. 4400: it shrinks onto the
   home-page subtitle. 5000: the push-out replays there (purple capitals spread, grey text opens) while 復興管樂團 fades in.
-  6000: the real subtitle takes over (purple F H S B, grey rest, see `src/pages/index.astro`). 6600: done. On pages other than Home the big
+  6000: the home subtitle (which is drawn with the same logo letters, `src/components/NameLine.astro`) takes over without any change of style. 6600: done. On pages other than Home the big
   letters just fade away. Visitors who prefer reduced motion get a short plain fade.
 - `public/images/logo-parts/`: **38 single objects** (every ring, stick, dot, tube and letter) as separate transparent PNGs, for
   animation. `manifest.json` gives each piece's name, colour (`purple` or `ink`), group (`icon`, `fhsb`, `name`) and its

@@ -225,10 +225,10 @@ const metaDesc = description ?? `${SITE.titleZh} ${SITE.titleEn} (${SITE.short})
           function shrink() {
             try {
               big = [].slice.call(document.querySelectorAll('.logo-anim .fhsb-l'));
-              var en = document.querySelector('.home h1 .en');
+              var line = document.querySelector('.home h1 .name-line');
               var row = document.querySelector('.logo-anim:not(.handover) .lp-name');
               if (!big.length) return;
-              if (!en || !row) {
+              if (!line || !row) {
                 // no title to land on (other pages): the big letters just fade away
                 big.forEach(function (el) {
                   el.style.animation = 'none';
@@ -237,14 +237,11 @@ const metaDesc = description ?? `${SITE.titleZh} ${SITE.titleEn} (${SITE.short})
                 });
                 return;
               }
-              var range = document.createRange();
-              range.selectNodeContents(en);
-              var t = range.getBoundingClientRect();
-              var h = (t.width * row.offsetHeight) / row.offsetWidth;
+              var t = line.getBoundingClientRect(); // the home subtitle is drawn with the same letters, so this is where they land
               hand = document.createElement('div');
               hand.className = 'logo-anim handover';
               hand.style.cssText =
-                'left:' + t.left + 'px;top:' + (t.top + t.height / 2 - h / 2) + 'px;width:' + t.width + 'px;height:' + h + 'px';
+                'left:' + t.left + 'px;top:' + t.top + 'px;width:' + t.width + 'px;height:' + t.height + 'px';
               var clone = row.cloneNode(true);
               clone.removeAttribute('style');
               hand.appendChild(clone);

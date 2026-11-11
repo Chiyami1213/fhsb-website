@@ -1,20 +1,18 @@
 ---
 import Base from '../layouts/Base.astro';
+import NameLine from '../components/NameLine.astro';
 import { SITE } from '../config';
-
-// F, H, S, B inside "Fuhsing Symphonic Band" are shown in the brand purple, the other letters in grey.
-const HIGHLIGHT = [0, 2, 8, 18];
-const chars = [...SITE.titleEn];
-if (HIGHLIGHT.some((at, k) => chars[at]?.toUpperCase() !== 'FHSB'[k])) {
-  throw new Error('SITE.titleEn no longer matches the F-H-S-B highlight positions in src/pages/index.astro');
-}
 ---
 
 <Base>
   <main class="home">
     <h1>
       <span class="zh">{SITE.titleZh}</span>
-      <span class="en">{chars.map((ch, i) => (HIGHLIGHT.includes(i) ? <span class="hl">{ch}</span> : ch))}</span>
+      <!-- the English name is drawn in the logo's lettering (purple F H S B, grey rest); the text stays for screen readers -->
+      <span class="en">
+        <span class="sr-only">{SITE.titleEn}</span>
+        <NameLine />
+      </span>
     </h1>
   </main>
 </Base>
