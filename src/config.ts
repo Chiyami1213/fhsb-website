@@ -3,6 +3,7 @@ export const SITE = {
   titleZh: '復興管樂團',
   titleEn: 'Fuhsing Symphonic Band',
   short: 'FHSB',
+  year: 2026, // shown in the footer banner
 };
 
 // Public contact links. The band has no email address, so none is shown.
@@ -46,8 +47,8 @@ export const NAV_TOP: NavItem[] = [
     ],
   },
   { href: '/documents/', label: 'nav.documents', icon: 'file' },
-  { href: '/contact/', label: 'nav.contact', icon: 'mail' },
 ];
 export const NAV_BOTTOM: NavItem[] = [
+  { href: '/contact/', label: 'nav.contact', icon: 'mail' },
   { href: '/settings/', label: 'nav.settings', icon: 'settings' },
 ];

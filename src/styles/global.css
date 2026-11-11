@@ -9,7 +9,7 @@
   --accent-fg: #ffffff;
   --serif: Georgia, 'Times New Roman', serif;
   --sans: system-ui, -apple-system, 'Segoe UI', 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
-  --rail-w: 68px;
+  --rail-w: 72px;
   --rail-w-open: 248px;
   color-scheme: light;
 }
@@ -88,14 +88,14 @@ p {
 .content {
   margin-left: var(--rail-w);
   padding: 72px 32px 64px;
-  min-height: 100vh;
+  flex: 1 0 auto;
 }
 .page {
   max-width: 820px;
   margin: 0 auto;
 }
 .home {
-  min-height: calc(100vh - 136px);
+  min-height: calc(100vh - 192px);
   display: grid;
   place-items: center;
   text-align: center;
@@ -116,26 +116,26 @@ p {
 
 /* ---------- left menu (always dark) ---------- */
 .rail {
-  --r-bg: #14141a;
-  --r-fg: #b9b9c6;
+  --r-bg: #1a1a20;
+  --r-fg: #cfcfd8;
   --r-hi: #ffffff;
-  --r-line: #272731;
+  --r-line: #2a2a33;
+  --r-accent: #e5737f;
   position: fixed;
   inset: 0 auto 0 0;
   width: var(--rail-w);
   background: var(--r-bg);
+  border-right: 1px solid var(--r-line);
   color: var(--r-fg);
   z-index: 50;
   overflow: hidden;
   transition: width 0.22s ease;
-  display: flex;
-  flex-direction: column;
 }
 .rail nav {
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 12px 0;
+  padding: 8px 0 12px;
 }
 .rail ul {
   list-style: none;
@@ -144,26 +144,55 @@ p {
 }
 .rail .nav.bottom {
   margin-top: auto;
-  border-top: 1px solid var(--r-line);
-  padding-top: 8px;
 }
-.rail a {
+/* » indicator at the top; turns into « while the menu is open */
+.rail-toggle {
   display: flex;
   align-items: center;
-  gap: 18px;
-  height: 46px;
-  padding: 0 23px;
+  height: 44px;
+  padding: 0 26px;
+  margin-bottom: 4px;
+  color: #8a8a97;
+  flex: none;
+}
+.rail-toggle svg {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.22s ease;
+}
+.rail .item {
+  position: relative;
+  margin: 4px 8px;
+}
+.rail a {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 48px;
+  padding: 0 16px;
+  border-radius: 12px;
   color: var(--r-fg);
   text-decoration: none;
   white-space: nowrap;
 }
-.rail a:hover,
-.rail .item.current > a {
+.rail a:hover {
   color: var(--r-hi);
+  background: #24242c;
 }
 .rail .item.current > a {
-  background: #23232d;
-  box-shadow: inset 3px 0 0 var(--accent);
+  color: var(--r-hi);
+  background: color-mix(in srgb, var(--r-accent) 20%, var(--r-bg));
+}
+.rail .item.current > a::before {
+  content: '';
+  position: absolute;
+  left: -8px;
+  top: 5px;
+  bottom: 5px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--r-accent);
 }
 .rail .lbl {
   opacity: 0;
@@ -175,10 +204,15 @@ p {
   transition: max-height 0.25s ease;
 }
 .sub a {
-  height: 38px;
+  height: 40px;
   gap: 14px;
-  padding-left: 64px;
+  padding-left: 50px;
+  margin-top: 2px;
   font-size: 0.92rem;
+}
+.sub a[aria-current='page'] {
+  color: var(--r-hi);
+  background: #24242c;
 }
 .sub .dot {
   width: 6px;
@@ -765,5 +799,38 @@ dialog::backdrop {
   .tile {
     font-size: 0.8rem;
     padding: 12px 4px;
+  }
+}
+
+/* ---------- footer banner ---------- */
+.shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.footer {
+  flex: none;
+  margin-left: var(--rail-w);
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.95rem;
+  text-align: center;
+}
+@media (hover: hover) and (pointer: fine) and (min-width: 641px) {
+  .rail:hover .rail-toggle svg,
+  .rail:focus-within .rail-toggle svg {
+    transform: rotate(180deg);
+  }
+}
+@media (max-width: 640px), (hover: none), (pointer: coarse) {
+  .footer {
+    margin-left: 0;
+  }
+  .rail-toggle {
+    display: none;
   }
 }

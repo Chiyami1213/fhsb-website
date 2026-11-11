@@ -13,6 +13,7 @@ export const ICONS: Record<string, string> = {
   moon: '<path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/>',
   monitor: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 21h8M12 16v5"/>',
   menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
+  chevrons: '<path d="M6 17l5-5-5-5M13 17l5-5-5-5"/>',
   instagram: '<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.3 6.7h.01"/>',
   facebook:
     '<path d="M15 3.5h-2A3.5 3.5 0 0 0 9.5 7v3H7v3.5h2.5V21H13v-7.5h2.5L16 10h-3V7.5c0-.3.2-.5.5-.5H15z"/>',

@@ -47,7 +47,7 @@ const metaDesc = description ?? `${SITE.titleZh} ${SITE.titleEn} (${SITE.short})
     </script>
 
     <!-- 2. language: window.t / window.setLang -->
-    <script define:vars={{ DICT }}>
+    <script is:inline define:vars={{ DICT }}>
       (function () {
         var LANGS = { en: 'en', zh: 'zh-TW' };
         var CODES = { en: 'EN', zh: 'CN' };
@@ -154,6 +154,7 @@ const metaDesc = description ?? `${SITE.titleZh} ${SITE.titleEn} (${SITE.short})
 
       <aside class="rail" id="rail" data-i18n-label="menu.aria" aria-label={en('menu.aria')}>
         <nav>
+          <div class="rail-toggle" aria-hidden="true"><Icon name="chevrons" /></div>
           {
             [NAV_TOP, NAV_BOTTOM].map((list, i) => (
               <ul class={i === 0 ? 'nav top' : 'nav bottom'}>
@@ -201,6 +202,8 @@ const metaDesc = description ?? `${SITE.titleZh} ${SITE.titleEn} (${SITE.short})
       <div class="content">
         <slot />
       </div>
+
+      <footer class="footer">© {SITE.short} {SITE.year}.</footer>
     </div>
 
     <div class="loader" id="loader" aria-hidden="true">
@@ -244,7 +247,7 @@ const metaDesc = description ?? `${SITE.titleZh} ${SITE.titleEn} (${SITE.short})
       }
       langbtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        setMenu(langmenu.hidden);
+        setMenu(Boolean(langmenu.hidden));
       });
       langmenu.querySelectorAll<HTMLElement>('[data-lang]').forEach((b) =>
         b.addEventListener('click', () => {
