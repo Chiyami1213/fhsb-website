@@ -65,7 +65,7 @@ export async function isAdmin(request, env) {
 }
 
 export const MAX_FAILS = 3; // wrong-password attempts allowed...
-export const LOCK_SECONDS = 15 * 60; // ...before that visitor is locked out for this long
+export const LOCK_SECONDS = 60 * 60; // ...before that visitor is locked out for this long
 
 export function locked() {
   return new Response('Too many attempts. Try again later.', { status: 429, headers: NO_STORE });

@@ -160,7 +160,7 @@ const lockedFiles = entries.flatMap((e) => e.data.locked.map((l) => ({ id: l.id,
       password = '';
       loginErr.textContent =
         (err as Error).message === '429'
-          ? 'Too many wrong attempts. Locked for 15 minutes.'
+          ? 'Too many wrong attempts. Locked for 1 hour.'
           : 'Unauthorized';
     }
   });

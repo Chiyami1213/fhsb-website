@@ -209,7 +209,7 @@ test('lockout: 3 wrong attempts allowed, then even the correct password is refus
   assert.equal((await tryList(env, null)).status, 429);
 });
 
-test('lockout: applies to every admin route, and lock expires after 15 minutes', async () => {
+test('lockout: applies to every admin route, and lock expires after 1 hour', async () => {
   const env = { ARCHIVE: fakeKV(), ADMIN_PASSWORD: PW };
   for (let i = 0; i < 3; i++) await tryList(env, 'wrong');
   const h = { 'CF-Connecting-IP': '1.1.1.1', ...admin };
@@ -220,7 +220,7 @@ test('lockout: applies to every admin route, and lock expires after 15 minutes',
   const failKey = [...env.ARCHIVE.m.keys()].find((k) => k.startsWith('fail:'));
   assert.ok(failKey, 'counter stored');
   assert.ok(!failKey.includes('1.1.1.1'), 'raw IP is not stored');
-  assert.equal(env.ARCHIVE.m.get(failKey).opts.expirationTtl, 900);
+  assert.equal(env.ARCHIVE.m.get(failKey).opts.expirationTtl, 3600);
   env.ARCHIVE.m.delete(failKey); // what KV does when the TTL runs out
   assert.equal((await tryList(env, PW)).status, 200);
 });
