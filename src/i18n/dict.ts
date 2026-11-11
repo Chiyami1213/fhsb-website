@@ -7,7 +7,8 @@ export const DICT: Record<string, Entry> = {
   'nav.home': { en: 'Home', zh: '首頁' },
   'nav.about': { en: 'About', zh: '關於我們' },
   'nav.history': { en: 'History', zh: '樂團沿革' },
-  'nav.concerts': { en: 'Concerts', zh: '音樂會' },
+  'nav.news': { en: 'News', zh: '最新消息' },
+  'nav.concerts': { en: 'Concerts', zh: '演出典藏' },
   'nav.music': { en: 'Music', zh: '音樂' },
   'nav.music.repertoire': { en: 'Repertoire', zh: '演出曲目' },
   'nav.music.recordings': { en: 'Recordings', zh: '錄音' },
@@ -40,13 +41,18 @@ export const DICT: Record<string, Entry> = {
   },
   'history.item': { en: 'Add a milestone here.', zh: '請在此加入一則里程碑。' },
 
+  // ---- news ----
+  'news.title': { en: 'News', zh: '最新消息' },
+  'news.intro': { en: 'Latest news from the band.', zh: '樂團的最新消息。' },
+  'news.empty': { en: 'No news yet.', zh: '目前還沒有最新消息。' },
+
   // ---- concerts ----
-  'concerts.title': { en: 'Concerts', zh: '音樂會' },
+  'concerts.title': { en: 'Concerts', zh: '演出典藏' },
   'concerts.intro': {
     en: 'Concerts and performances by the band.',
-    zh: '樂團的音樂會與演出。',
+    zh: '樂團的演出典藏。',
   },
-  'concerts.empty': { en: 'No concerts listed yet.', zh: '目前尚未列出任何音樂會。' },
+  'concerts.empty': { en: 'No concerts listed yet.', zh: '目前尚未列出任何演出典藏。' },
 
   // ---- music ----
   'music.title': { en: 'Music', zh: '音樂' },

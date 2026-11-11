@@ -32,21 +32,13 @@ export interface NavItem {
 }
 
 // To add a menu item: add one line here (and a label key in src/i18n/dict.ts).
-// Pages that exist but are not listed (reachable by URL): /archive/, /history/
+// Pages that exist but are not listed (reachable by URL): /archive/, /history/, /music/, /documents/
+// To bring one back, add a line such as: { href: '/music/', label: 'nav.music', icon: 'music' },
 export const NAV_TOP: NavItem[] = [
   { href: '/', label: 'nav.home', icon: 'home' },
   { href: '/about/', label: 'nav.about', icon: 'info' },
+  { href: '/news/', label: 'nav.news', icon: 'news' },
   { href: '/concerts/', label: 'nav.concerts', icon: 'calendar' },
-  {
-    href: '/music/',
-    label: 'nav.music',
-    icon: 'music',
-    children: [
-      { href: '/music/repertoire/', label: 'nav.music.repertoire' },
-      { href: '/music/recordings/', label: 'nav.music.recordings' },
-    ],
-  },
-  { href: '/documents/', label: 'nav.documents', icon: 'file' },
 ];
 export const NAV_BOTTOM: NavItem[] = [
   { href: '/contact/', label: 'nav.contact', icon: 'mail' },
