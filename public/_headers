@@ -1,3 +1,8 @@
+# Not listed in search engines yet. To go public in search: delete this block and set
+# ALLOW_SEARCH_INDEXING = true in src/config.ts.
+/*
+  X-Robots-Tag: noindex, nofollow, noarchive
+
 /admin
   X-Robots-Tag: noindex, nofollow
 /admin/*

@@ -3,7 +3,7 @@ import '../styles/global.css';
 import Icon from '../components/Icon.astro';
 import LogoMark from '../components/LogoMark.astro';
 import { DICT, en } from '../i18n/dict';
-import { SITE, NAV_TOP, NAV_BOTTOM, EASTER_EGG_URL } from '../config';
+import { SITE, NAV_TOP, NAV_BOTTOM, EASTER_EGG_URL, ALLOW_SEARCH_INDEXING } from '../config';
 
 interface Props {
   /** dictionary key for the page title (translated) */
@@ -27,7 +27,7 @@ const metaDesc = description ?? `${SITE.titleZh} ${SITE.titleEn} (${SITE.short})
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={metaDesc} />
-    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {(noindex || !ALLOW_SEARCH_INDEXING) && <meta name="robots" content="noindex, nofollow, noarchive" />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     {
       titleKey ? (

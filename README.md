@@ -35,7 +35,11 @@ To add one to the menu, add one line to `NAV_TOP` in `src/config.ts` (plus a lab
   Contact page. Alerts go to an email set as a Cloudflare **secret** (below), never in code.
 - Anything under `public/` can be downloaded by anyone with the URL. Files that need approval must
   **not** be in the repo. Check PDFs for personal metadata.
-- Only `/admin/` and `/request-status/` are `noindex`. There is no `robots.txt`.
+- **Search engines are currently blocked site-wide**: every page has a `noindex, nofollow, noarchive` tag and the same
+  `X-Robots-Tag` header (`public/_headers`). There is deliberately no `robots.txt` block, because Google must be able to
+  load a page to see its `noindex`. The site is still reachable by anyone who has the address; for real privacy put it behind
+  Cloudflare Access. To go public in search: set `ALLOW_SEARCH_INDEXING = true` in `src/config.ts` **and** delete the `/*`
+  block at the top of `public/_headers`.
 
 ## Request-access backend (Cloudflare)
 

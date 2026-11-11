@@ -16,6 +16,10 @@ export const CONTACT = {
   website: '', // any other website
 };
 
+// Search engines. false = every page carries a "noindex" tag, so Google/Bing do not list the site.
+// To appear in search later: set this to true AND delete the "/*" block at the top of public/_headers.
+export const ALLOW_SEARCH_INDEXING = false;
+
 // Optional hidden link on the loading-screen character. Empty = no link.
 export const EASTER_EGG_URL = '';
 

@@ -312,8 +312,19 @@ Then: build → test → commit → push.
 3. Submit a sitemap (add `@astrojs/sitemap` and set `site:` in `astro.config.mjs` to the final address).
 4. Link to the site from places Google already crawls (social profiles, the school or club website).
 
-A new site can take days to weeks to appear. Do not block indexing (no site-wide `noindex`, no
-`robots.txt`) if you want to be found.
+A new site can take days to weeks to appear.
+
+### Keeping the site out of Google until you are ready
+
+This project ships with search indexing **off**: every page has `<meta name="robots" content="noindex, nofollow, noarchive">`
+and the same `X-Robots-Tag` response header (first block of `public/_headers`). Do **not** also add a `robots.txt` that blocks
+everything: Google then cannot load the page to see the `noindex`, and the bare address can still show up in results.
+This only asks search engines to stay away. The site stays reachable by anyone with the address. For real privacy use
+Cloudflare Zero Trust **Access** (free for small teams) in front of the site.
+
+To go public: set `ALLOW_SEARCH_INDEXING = true` in `src/config.ts`, delete the `/*` block at the top of
+`public/_headers`, deploy, then continue with the Search Console steps above. If the site was ever indexed, Google drops it
+after it re-crawls the `noindex` pages (days to weeks), or use the Removals tool in Search Console to hurry that up.
 
 ---
 
