@@ -4,8 +4,8 @@
 //  row 2: the big FHSB letters slide in from the left, in the order B, S, H, F (they leave F, H, S, B)
 //  row 3: the four purple capitals F H S B appear together, then move apart to their places while the
 //         rest of "FuHsing Symphonic Band" wipes open, left to right, out from behind the purple letters
-// After the window opens the logo stays; rows 1-2 then leave the way they came (html.leave), and row 3
-// (.lp-name) morphs into the home-page subtitle (html.morph, see the script in Base.astro).
+// After the window opens (see the timeline in Base.astro): the instruments leave right and the full name leaves left;
+// the big FHSB turns purple, shrinks onto the home-page subtitle and the push-out of row 3 is replayed there.
 // Positions come from src/data/loader-layout.json (made by design/tools/make_loader_assets.py).
 import layout from '../data/loader-layout.json';
 
@@ -60,7 +60,7 @@ const n = layout.instruments.length;
   {
     layout.fhsb.map((p, i) => (
       <span
-        class="lp from-left ink"
+        class="lp from-left ink fhsb-l"
         style={`${box(p)};--d:${(0.35 + 0.08 * (layout.fhsb.length - 1 - i)).toFixed(2)}s;--xd:${(0.08 * i).toFixed(2)}s;--m:url(${p.src})`}
       />
     ))

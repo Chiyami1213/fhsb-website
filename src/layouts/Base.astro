@@ -199,8 +199,9 @@ const metaDesc = description ?? `${SITE.titleZh} ${SITE.titleEn} (${SITE.short})
     </script>
 
     <!-- 3. loading screen: first visit of a session + every reload, never on /admin.
-         Timeline: logo builds (0-2.2s) -> window opens (2.6s) -> logo stays, rows 1-2 leave (3.5s)
-         -> row 3 morphs into the home-page title (4.2s) -> cleanup (5.4s). -->
+         Timeline (ms): logo builds (0-2300) -> window opens (2600) -> instruments leave right, full name leaves
+         left (3400) -> big FHSB turns purple (4100) -> it shrinks onto the home subtitle (4400) -> the push-out
+         replays there: purple F H S B spread, grey text opens (5000) -> settles into the real title (6000) -> done (6600). -->
     <script is:inline>
       (function () {
         try {
@@ -211,36 +212,72 @@ const metaDesc = description ?? `${SITE.titleZh} ${SITE.titleEn} (${SITE.short})
           sessionStorage.setItem('fhsb-seen', '1');
           var d = document.documentElement;
           var calm = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+          var big = []; // the four big FHSB letters
+          var hand = null; // the handover layer: row 3's push-out replayed at the subtitle's size and place
           d.classList.add('loading');
           function done() {
-            d.classList.remove('loading', 'open', 'leave', 'morph');
+            d.classList.remove('loading', 'open', 'leave', 'purple', 'shrink', 'spread', 'settle');
             var l = document.getElementById('loader');
             if (l) l.remove();
+            if (hand) hand.remove();
           }
-          // row 3 flies (and scales) onto the home-page subtitle while the real text fades in;
-          // on other pages there is nothing to land on, so it just fades away
-          function morph() {
+          // measure the home subtitle and fly the (purple) big letters onto the bunched small capitals
+          function shrink() {
             try {
-              var row = document.querySelector('.lp-name');
-              if (!row) return;
+              big = [].slice.call(document.querySelectorAll('.logo-anim .fhsb-l'));
               var en = document.querySelector('.home h1 .en');
-              if (!en) {
-                row.style.transition = 'opacity 0.5s ease';
-                row.style.opacity = '0';
+              var row = document.querySelector('.logo-anim:not(.handover) .lp-name');
+              if (!big.length) return;
+              if (!en || !row) {
+                // no title to land on (other pages): the big letters just fade away
+                big.forEach(function (el) {
+                  el.style.animation = 'none';
+                  el.style.transition = 'opacity 0.5s ease';
+                  el.style.opacity = '0';
+                });
                 return;
               }
-              var r = row.getBoundingClientRect();
               var range = document.createRange();
               range.selectNodeContents(en);
               var t = range.getBoundingClientRect();
-              if (!r.width || !t.width) return;
-              var dx = t.left + t.width / 2 - (r.left + r.width / 2);
-              var dy = t.top + t.height / 2 - (r.top + r.height / 2);
-              row.style.transformOrigin = '50% 50%';
-              row.style.transition = 'transform 0.85s cubic-bezier(0.65, 0, 0.25, 1), opacity 0.5s ease 0.45s';
-              row.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(' + t.width / r.width + ')';
-              row.style.opacity = '0';
+              var h = (t.width * row.offsetHeight) / row.offsetWidth;
+              hand = document.createElement('div');
+              hand.className = 'logo-anim handover';
+              hand.style.cssText =
+                'left:' + t.left + 'px;top:' + (t.top + t.height / 2 - h / 2) + 'px;width:' + t.width + 'px;height:' + h + 'px';
+              var clone = row.cloneNode(true);
+              clone.removeAttribute('style');
+              hand.appendChild(clone);
+              document.body.appendChild(hand);
+              // timing inside the replay: the purple capitals spread at once, the grey text opens a beat later
+              var kids = clone.children;
+              var n = 0;
+              for (var i = 0; i < kids.length; i++) {
+                if (kids[i].classList.contains('gather')) kids[i].style.setProperty('--hd', '0s');
+                else kids[i].style.setProperty('--hd', 0.28 + 0.08 * n++ + 's');
+              }
+              var targets = [].slice.call(clone.querySelectorAll('.gather'));
+              big.forEach(function (el, i) {
+                var a = el.getBoundingClientRect();
+                var b = targets[i].getBoundingClientRect();
+                el.style.animation = 'none';
+                el.style.transformOrigin = '50% 50%';
+                void el.offsetWidth;
+                el.style.transition = 'transform 0.55s cubic-bezier(0.65, 0, 0.25, 1)';
+                el.style.transform =
+                  'translate(' + (b.left + b.width / 2 - a.left - a.width / 2) + 'px,' + (b.top + b.height / 2 - a.top - a.height / 2) + 'px) ' +
+                  'scale(' + b.width / a.width + ',' + b.height / a.height + ')';
+              });
             } catch (e) {}
+          }
+          // the replay takes over from the big letters: purple capitals spread, grey text opens
+          function spread() {
+            if (!hand) return;
+            hand.classList.add('show', 'go');
+            big.forEach(function (el) {
+              el.style.transition = 'opacity 0.25s ease';
+              el.style.opacity = '0';
+            });
           }
           setTimeout(function () {
             d.classList.add('open');
@@ -251,12 +288,22 @@ const metaDesc = description ?? `${SITE.titleZh} ${SITE.titleEn} (${SITE.short})
           }
           setTimeout(function () {
             d.classList.add('leave');
-          }, 3500);
+          }, 3400);
           setTimeout(function () {
-            d.classList.add('morph');
-            morph();
-          }, 4200);
-          setTimeout(done, 5400);
+            d.classList.add('purple');
+          }, 4100);
+          setTimeout(function () {
+            d.classList.add('shrink');
+            shrink();
+          }, 4400);
+          setTimeout(function () {
+            d.classList.add('spread');
+            spread();
+          }, 5000);
+          setTimeout(function () {
+            d.classList.add('settle');
+          }, 6000);
+          setTimeout(done, 6600);
         } catch (e) {}
       })();
     </script>

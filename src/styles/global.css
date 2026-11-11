@@ -7,6 +7,7 @@
   --card: #f6f6f9;
   --accent: #5b54b8;
   --accent-fg: #ffffff;
+  --brand: #726ccf; /* logo purple, the same in both themes */
   --serif: Georgia, 'Times New Roman', 'Yu Mincho', 'Hiragino Mincho ProN', 'Noto Serif JP', 'Noto Serif TC', serif;
   --sans: system-ui, -apple-system, 'Segoe UI', 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
   --rail-w: 72px;
@@ -104,8 +105,11 @@ p {
   font-size: clamp(2rem, 6vw, 3.6rem);
   margin: 0;
 }
-.home h1 span {
+.home h1 > span {
   display: block;
+}
+.home h1 .hl {
+  color: var(--brand);
 }
 .home h1 .en {
   font-size: 0.55em;
@@ -248,7 +252,8 @@ p {
   }
   .rail .item:hover > .sub,
   .rail .item:focus-within > .sub,
-  .rail .item.current > .sub {
+  .rail:hover .item.current > .sub,
+  .rail:focus-within .item.current > .sub {
     max-height: 200px;
   }
 }
@@ -449,18 +454,16 @@ html.loading.open .loader .ltext {
   position: absolute;
   will-change: transform, opacity;
 }
-/* after the window opens: rows 1-2 leave the way they came (last in, first out) */
+/* after the window opens (html.leave): the instruments leave to the right (last in, first out) and the
+   full name leaves to the left; the big FHSB stays */
 html.leave .logo-anim .from-right {
   animation-name: lp-exit-right;
   animation-duration: 0.5s;
   animation-timing-function: cubic-bezier(0.5, 0, 0.9, 0.4);
   animation-delay: var(--xd, 0s);
 }
-html.leave .logo-anim .from-left {
-  animation-name: lp-exit-left;
-  animation-duration: 0.5s;
-  animation-timing-function: cubic-bezier(0.5, 0, 0.9, 0.4);
-  animation-delay: var(--xd, 0s);
+html.leave .logo-anim:not(.handover) .lp-name {
+  animation: lp-exit-left 0.6s cubic-bezier(0.5, 0, 0.9, 0.4) 0.1s both;
 }
 @keyframes lp-exit-right {
   from {
@@ -484,21 +487,74 @@ html.leave .logo-anim .from-left {
     opacity: 1;
   }
   to {
-    transform: translateX(-110vw);
+    transform: translateX(-120vw);
     opacity: 0;
   }
 }
-/* home title: hidden while the logo is on screen, then fades in as row 3 lands on it */
-html.loading .home h1 span {
+/* the big FHSB turns purple (html.purple) */
+.logo-anim .fhsb-l {
+  transition: background-color 0.4s ease;
+}
+html.purple .logo-anim .fhsb-l {
+  background: var(--brand);
+}
+/* handover layer: row 3's push-out replayed at the size and place of the home subtitle, in the final
+   colours (purple capitals, grey text). It waits (paused) until the big letters have landed on it. */
+.logo-anim.handover {
+  position: fixed;
+  z-index: 101;
+  pointer-events: none;
   opacity: 0;
 }
-html.morph .home h1 .en {
+.logo-anim.handover.show {
   opacity: 1;
-  transition: opacity 0.6s ease 0.45s;
+  transition: opacity 0.2s ease;
 }
-html.morph .home h1 .zh {
+html.settle .logo-anim.handover {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.logo-anim.handover .lp-name {
+  left: 0 !important;
+  top: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+.logo-anim.handover .lp {
+  animation-play-state: paused;
+  animation-delay: var(--hd, 0s);
+}
+.logo-anim.handover.go .lp {
+  animation-play-state: running;
+}
+.logo-anim.handover .gather {
+  animation-name: lp-spread;
+  animation-duration: 0.65s;
+  animation-timing-function: cubic-bezier(0.65, 0, 0.25, 1);
+}
+.logo-anim.handover .ink {
+  background: var(--muted);
+}
+@keyframes lp-spread {
+  from {
+    transform: translateX(var(--tx, 0%));
+  }
+  to {
+    transform: none;
+  }
+}
+/* home title: hidden while the logo is on screen; the Chinese title fades in as the push-out starts,
+   the real subtitle takes over from the replay at the end */
+html.loading .home h1 > span {
+  opacity: 0;
+}
+html.spread .home h1 .zh {
   opacity: 1;
-  transition: opacity 0.7s ease 0.65s;
+  transition: opacity 0.8s ease 0.3s;
+}
+html.settle .home h1 .en {
+  opacity: 1;
+  transition: opacity 0.4s ease;
 }
 @keyframes lp-from-right {
   from {
