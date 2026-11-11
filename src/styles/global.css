@@ -120,7 +120,7 @@ p {
   --r-fg: #cfcfd8;
   --r-hi: #ffffff;
   --r-line: #2a2a33;
-  --r-accent: #6f6bcc; /* logo purple */
+  --r-accent: #726ccf; /* logo purple */
   position: fixed;
   inset: 0 auto 0 0;
   width: var(--rail-w);
@@ -406,11 +406,24 @@ html.loading.open .loader .center {
   opacity: 0;
 }
 .loader .char {
-  width: 200px;
-  height: auto;
-  color: var(--accent);
+  width: min(240px, 62vw);
   display: block;
   animation: bob 1.6s ease-in-out infinite;
+}
+.logo {
+  position: relative;
+}
+.logo img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.logo .logo-ink {
+  position: absolute;
+  inset: 0;
+  background: var(--fg);
+  -webkit-mask: url(/images/logo-ink.png) center / 100% 100% no-repeat;
+  mask: url(/images/logo-ink.png) center / 100% 100% no-repeat;
 }
 .loader .egg {
   display: block;

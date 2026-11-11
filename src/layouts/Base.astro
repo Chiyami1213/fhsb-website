@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import Icon from '../components/Icon.astro';
+import LogoMark from '../components/LogoMark.astro';
 import { DICT, en } from '../i18n/dict';
 import { SITE, NAV_TOP, NAV_BOTTOM, EASTER_EGG_URL } from '../config';
 
@@ -282,10 +283,10 @@ const metaDesc = description ?? `${SITE.titleZh} ${SITE.titleEn} (${SITE.short})
         {
           EASTER_EGG_URL ? (
             <a class="egg" href={EASTER_EGG_URL} target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">
-              <Icon name="note" class="char" />
+              <LogoMark class="char" />
             </a>
           ) : (
-            <Icon name="note" class="char" />
+            <LogoMark class="char" />
           )
         }
         <div class="ltext">

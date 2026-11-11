@@ -1,0 +1,13 @@
+---
+// FHSB logo as two transparent layers: the purple artwork, plus the black ink drawn through a CSS mask
+// so the lettering follows the theme text colour (dark on light, light on dark).
+interface Props {
+  class?: string;
+}
+const { class: cls = '' } = Astro.props;
+---
+
+<div class:list={['logo', cls]}>
+  <img class="logo-purple" src="/images/logo-purple.png" alt="" width="1000" height="663" decoding="async" />
+  <span class="logo-ink" aria-hidden="true"></span>
+</div>
