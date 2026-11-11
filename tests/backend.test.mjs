@@ -243,3 +243,30 @@ test('lockout: counts even when the secret is not configured, and never touches 
   const { data } = await submit(env);
   assert.equal((await status(env, data.token)).status, 200); // visitors unaffected by admin lock
 });
+
+// ---- default language by country ----
+import { onRequestGet as langGet } from '../functions/api/lang.js';
+import { pickLang } from '../functions/_lib/util.js';
+
+test('lang: Mandarin-speaking regions get zh, everywhere else (and unknown) gets en', () => {
+  for (const c of ['TW', 'CN', 'HK', 'MO', 'SG', 'tw', 'Cn']) assert.equal(pickLang(c), 'zh', c);
+  for (const c of ['US', 'JP', 'GB', 'MY', 'KR', 'XX', 'T1', '', undefined, null, 'TWN']) {
+    assert.equal(pickLang(c), 'en', String(c));
+  }
+});
+
+test('lang: endpoint reads the country from request.cf or the CF-IPCountry header, returns only the language', async () => {
+  const fromCf = new Request('https://x.test/api/lang');
+  fromCf.cf = { country: 'TW' };
+  let res = await langGet({ request: fromCf });
+  assert.deepEqual(await res.json(), { lang: 'zh' });
+  assert.equal(res.headers.get('Cache-Control'), 'no-store');
+
+  res = await langGet({ request: new Request('https://x.test/api/lang', { headers: { 'CF-IPCountry': 'US' } }) });
+  const body = await res.text();
+  assert.equal(body, JSON.stringify({ lang: 'en' }));
+  assert.ok(!body.includes('US'), 'country is not echoed');
+
+  res = await langGet({ request: new Request('https://x.test/api/lang') }); // no country info at all
+  assert.deepEqual(await res.json(), { lang: 'en' });
+});

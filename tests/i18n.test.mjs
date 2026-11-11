@@ -24,35 +24,148 @@ const DICT = new Function(
   `${dictBody.replace('export const DICT: Record<string, Entry> =', 'return')}`,
 )();
 
-async function load(page, saved = {}) {
+const tick = (ms) => new Promise((r) => setTimeout(r, ms));
+
+/**
+ * Loads a BUILT page in jsdom.
+ *  saved   -> localStorage presets (explicit choice lives in 'fhsb-lang')
+ *  session -> sessionStorage presets (cached automatic choice 'fhsb-autolang')
+ *  api     -> what /api/lang does: 'zh' | 'en' | 'fail' | 'slow' (never answers) | 'late-en' | 'late-zh'
+ *  navLang -> navigator.language
+ */
+async function load(page, { saved = {}, session = {}, api = 'en', navLang = 'en-US' } = {}) {
   const html = fs.readFileSync(path.join(DIST, page), 'utf8');
+  let fetchCalls = 0;
   const dom = new JSDOM(html, {
     runScripts: 'dangerously',
     url: 'https://example.test/' + page.replace('index.html', ''),
     beforeParse(w) {
       for (const [k, v] of Object.entries(saved)) w.localStorage.setItem(k, v);
+      for (const [k, v] of Object.entries(session)) w.sessionStorage.setItem(k, v);
+      Object.defineProperty(w.navigator, 'language', { value: navLang, configurable: true });
+      const answer = (lang) => ({ ok: true, json: async () => ({ lang }) });
+      w.fetch = (url) => {
+        if (String(url).includes('/api/lang')) {
+          fetchCalls++;
+          if (api === 'fail') return Promise.reject(new Error('offline'));
+          if (api === 'slow') return new Promise(() => {});
+          if (api === 'late-en') return tick(200).then(() => answer('en'));
+          if (api === 'late-zh') return tick(200).then(() => answer('zh'));
+          return Promise.resolve(answer(api));
+        }
+        return Promise.reject(new Error('unexpected fetch ' + url));
+      };
     },
   });
-  if (dom.window.document.readyState !== 'complete') await new Promise((r) => dom.window.addEventListener('load', r));
+  dom.fetchCalls = () => fetchCalls;
+  if (dom.window.document.readyState !== 'complete') {
+    await new Promise((r) => dom.window.addEventListener('load', r));
+  }
+  if (!api.startsWith('late') && api !== 'slow') await tick(30); // let the region check settle
   return dom;
 }
 const text = (dom, sel) => dom.window.document.querySelector(sel).textContent;
+const lang = (dom) => dom.window.document.documentElement.lang;
 
-test('English is the default (no browser-language guessing)', async () => {
-  const dom = await load('settings/index.html');
-  assert.equal(dom.window.document.documentElement.lang, 'en');
+test('default language follows the visitor region: zh in Mandarin-speaking regions, en elsewhere', async () => {
+  let dom = await load('settings/index.html', { api: 'zh' });
+  assert.equal(lang(dom), 'zh-TW');
+  assert.equal(text(dom, 'h1'), '設定');
+  assert.equal(text(dom, '#langcode'), 'CN');
+  assert.equal(dom.window.localStorage.getItem('fhsb-lang'), null, 'automatic choice is not saved as an explicit one');
+  assert.equal(dom.window.sessionStorage.getItem('fhsb-autolang'), 'zh');
+  assert.ok(!dom.window.document.documentElement.classList.contains('i18n-pending'));
+  dom.window.close();
+
+  dom = await load('settings/index.html', { api: 'en' });
+  assert.equal(lang(dom), 'en');
   assert.equal(text(dom, 'h1'), 'Settings');
   assert.equal(text(dom, '#langcode'), 'EN');
+  assert.equal(dom.window.sessionStorage.getItem('fhsb-autolang'), 'en');
+  dom.window.close();
+});
+
+test('if the region check fails or is slow, the browser language decides (zh* -> zh, otherwise en)', async () => {
+  for (const [navLang, expected] of [['zh-TW', 'zh-TW'], ['zh-CN', 'zh-TW'], ['en-US', 'en'], ['ja-JP', 'en'], ['', 'en']]) {
+    const dom = await load('settings/index.html', { api: 'fail', navLang });
+    assert.equal(lang(dom), expected, `fail + ${navLang}`);
+    dom.window.close();
+  }
+  const slow = await load('settings/index.html', { api: 'slow', navLang: 'en-US' });
+  await tick(1400); // the 1.2 s timeout fires
+  assert.equal(lang(slow), 'en');
+  assert.equal(text(slow, 'h1'), 'Settings');
+  assert.ok(!slow.window.document.documentElement.classList.contains('i18n-pending'));
+  slow.window.close();
+});
+
+test('an explicit choice beats the region check, is remembered, and skips the check', async () => {
+  let dom = await load('settings/index.html', { saved: { 'fhsb-lang': 'en' }, api: 'zh' });
+  assert.equal(lang(dom), 'en');
+  assert.equal(text(dom, 'h1'), 'Settings');
+  assert.equal(dom.fetchCalls(), 0);
+  dom.window.close();
+
+  dom = await load('settings/index.html', { saved: { 'fhsb-lang': 'zh' }, api: 'en' });
+  assert.equal(lang(dom), 'zh-TW');
+  assert.equal(text(dom, 'h1'), '設定');
+  assert.equal(dom.fetchCalls(), 0);
+  dom.window.close();
+});
+
+test('choosing a language before the region check answers wins over the late answer', async () => {
+  const dom = await load('settings/index.html', { api: 'late-zh' });
+  dom.window.setLang('en');
+  await tick(350);
+  assert.equal(lang(dom), 'en');
+  assert.equal(text(dom, 'h1'), 'Settings');
+  assert.equal(dom.window.localStorage.getItem('fhsb-lang'), 'en');
+  dom.window.close();
+});
+
+test('a late region answer that changes the language fires langchange; the session caches the result', async () => {
+  const dom = await load('settings/index.html', { api: 'late-en' });
+  let fired = 0;
+  dom.window.document.addEventListener('langchange', () => fired++);
+  await tick(350);
+  assert.equal(lang(dom), 'en');
+  assert.equal(text(dom, 'h1'), 'Settings');
+  assert.equal(fired, 1);
+  dom.window.close();
+
+  // a cached automatic choice is reused within the session: no new request
+  for (const [cached, expected] of [['en', 'en'], ['zh', 'zh-TW']]) {
+    const d = await load('settings/index.html', { session: { 'fhsb-autolang': cached }, api: cached === 'en' ? 'zh' : 'en' });
+    assert.equal(lang(d), expected);
+    assert.equal(d.fetchCalls(), 0);
+    d.window.close();
+  }
+});
+
+test('invalid saved or cached values are ignored; invalid setLang calls do nothing', async () => {
+  for (const bad of ['ja', 'fr', '', '__proto__', 'constructor']) {
+    let dom = await load('settings/index.html', { saved: { 'fhsb-lang': bad }, api: 'zh' });
+    assert.equal(lang(dom), 'zh-TW', `saved ${bad} -> region check`);
+    dom.window.close();
+    dom = await load('settings/index.html', { session: { 'fhsb-autolang': bad }, api: 'en' });
+    assert.equal(lang(dom), 'en', `cached ${bad} -> region check`);
+    dom.window.close();
+  }
+  const dom = await load('settings/index.html', { api: 'en' });
+  dom.window.setLang('ja');
+  dom.window.setLang('__proto__');
+  assert.equal(lang(dom), 'en');
+  assert.equal(dom.window.localStorage.getItem('fhsb-lang'), null);
   dom.window.close();
 });
 
 test('switching EN -> CN -> EN, persistence and langchange event', async () => {
-  const dom = await load('settings/index.html');
+  const dom = await load('settings/index.html', { api: 'en' });
   const w = dom.window;
   let fired = 0;
   w.document.addEventListener('langchange', () => fired++);
   w.setLang('zh');
-  assert.equal(w.document.documentElement.lang, 'zh-TW');
+  assert.equal(lang(dom), 'zh-TW');
   assert.equal(text(dom, 'h1'), '設定');
   assert.equal(text(dom, '#langcode'), 'CN');
   assert.equal(w.localStorage.getItem('fhsb-lang'), 'zh');
@@ -63,28 +176,8 @@ test('switching EN -> CN -> EN, persistence and langchange event', async () => {
   w.close();
 });
 
-test('saved language is applied on load; unknown saved/selected values fall back to English', async () => {
-  let dom = await load('settings/index.html', { 'fhsb-lang': 'zh' });
-  assert.equal(dom.window.document.documentElement.lang, 'zh-TW');
-  assert.equal(text(dom, 'h1'), '設定');
-  dom.window.close();
-
-  for (const bad of ['ja', 'fr', '', '__proto__', 'constructor']) {
-    dom = await load('settings/index.html', { 'fhsb-lang': bad });
-    assert.equal(dom.window.document.documentElement.lang, 'en', `saved ${bad}`);
-    assert.equal(text(dom, 'h1'), 'Settings');
-    dom.window.close();
-  }
-  dom = await load('settings/index.html');
-  dom.window.setLang('ja');
-  dom.window.setLang('__proto__');
-  assert.equal(dom.window.document.documentElement.lang, 'en');
-  assert.equal(dom.window.localStorage.getItem('fhsb-lang'), null);
-  dom.window.close();
-});
-
 test('placeholders, {label} variables and attributes are translated', async () => {
-  let dom = await load('archive/index.html', { 'fhsb-lang': 'zh' });
+  let dom = await load('archive/index.html', { saved: { 'fhsb-lang': 'zh' } });
   assert.equal(dom.window.document.querySelector('#q').getAttribute('placeholder'), '搜尋…');
   dom.window.close();
 
@@ -99,7 +192,7 @@ test('placeholders, {label} variables and attributes are translated', async () =
 });
 
 test('page title is translated and keeps its suffix', async () => {
-  const dom = await load('about/index.html', { 'fhsb-lang': 'zh' });
+  const dom = await load('about/index.html', { saved: { 'fhsb-lang': 'zh' } });
   assert.equal(dom.window.document.title, '關於我們 · FHSB');
   dom.window.close();
 });

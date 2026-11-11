@@ -130,3 +130,11 @@ export async function listKeys(env, prefix) {
   }
   return names;
 }
+
+// Countries where visitors get Traditional Chinese by default (ISO 3166-1 alpha-2).
+// Taiwan, mainland China, Hong Kong, Macau, Singapore. Everyone else gets English.
+export const MANDARIN_COUNTRIES = ['TW', 'CN', 'HK', 'MO', 'SG'];
+
+export function pickLang(country) {
+  return MANDARIN_COUNTRIES.includes(String(country || '').toUpperCase()) ? 'zh' : 'en';
+}

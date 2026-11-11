@@ -46,19 +46,42 @@ const metaDesc = description ?? `${SITE.titleZh} ${SITE.titleEn} (${SITE.short})
       })();
     </script>
 
-    <!-- 2. language: window.t / window.setLang -->
+    <!-- 2. language: window.t / window.setLang.
+         Default = Traditional Chinese for visitors in Mandarin-speaking regions, English elsewhere
+         (decided by /api/lang). A language picked in the switcher always wins and is remembered. -->
     <script is:inline define:vars={{ DICT }}>
       (function () {
         var LANGS = { en: 'en', zh: 'zh-TW' };
         var CODES = { en: 'EN', zh: 'CN' };
-        var KEY = 'fhsb-lang';
-        var cur = 'en';
+        var KEY = 'fhsb-lang'; // explicit choice (localStorage)
+        var AUTO = 'fhsb-autolang'; // detected for this browser session (sessionStorage)
+        var has = function (o, k) {
+          return Object.prototype.hasOwnProperty.call(o, k);
+        };
+        var root = document.documentElement;
+        var cur = 'zh'; // tentative until the region check answers
+        var explicit = false;
+        var resolved = false;
+        var domReady = false;
         try {
           var s = localStorage.getItem(KEY);
-          if (s && Object.prototype.hasOwnProperty.call(LANGS, s)) cur = s;
+          if (s && has(LANGS, s)) {
+            cur = s;
+            explicit = true;
+            resolved = true;
+          }
         } catch (e) {}
-        var root = document.documentElement;
+        if (!resolved) {
+          try {
+            var a = sessionStorage.getItem(AUTO);
+            if (a && has(LANGS, a)) {
+              cur = a;
+              resolved = true;
+            }
+          } catch (e) {}
+        }
         root.lang = LANGS[cur];
+        // hide the page for a moment so the wrong language never flashes (with a failsafe)
         if (cur !== 'en') {
           root.classList.add('i18n-pending');
           setTimeout(function () {
@@ -70,7 +93,7 @@ const metaDesc = description ?? `${SITE.titleZh} ${SITE.titleEn} (${SITE.short})
           var s = e ? e[cur] || e.en : key;
           if (vars) {
             s = s.replace(/\{(\w+)\}/g, function (m, k) {
-              return Object.prototype.hasOwnProperty.call(vars, k) ? vars[k] : m;
+              return has(vars, k) ? vars[k] : m;
             });
           }
           return s;
@@ -103,21 +126,67 @@ const metaDesc = description ?? `${SITE.titleZh} ${SITE.titleEn} (${SITE.short})
           root.classList.remove('i18n-pending');
         }
         function setLang(l) {
-          if (!Object.prototype.hasOwnProperty.call(LANGS, l)) return;
+          if (!has(LANGS, l)) return;
           cur = l;
+          explicit = true;
+          resolved = true;
           try {
             localStorage.setItem(KEY, l);
           } catch (e) {}
           apply();
           document.dispatchEvent(new CustomEvent('langchange', { detail: { lang: l } }));
         }
+        // result of the region check (ignored if the visitor already chose a language)
+        function finish(l) {
+          if (explicit || resolved) return;
+          resolved = true;
+          var changed = l !== cur;
+          cur = l;
+          try {
+            sessionStorage.setItem(AUTO, l);
+          } catch (e) {}
+          if (domReady) {
+            apply();
+            if (changed) document.dispatchEvent(new CustomEvent('langchange', { detail: { lang: l } }));
+          }
+        }
+        function guess() {
+          return /^zh/i.test(navigator.language || '') ? 'zh' : 'en';
+        }
+        if (!resolved) {
+          var timer = setTimeout(function () {
+            finish(guess());
+          }, 1200);
+          try {
+            fetch('/api/lang', { cache: 'no-store' })
+              .then(function (r) {
+                if (!r.ok) throw new Error('lang');
+                return r.json();
+              })
+              .then(function (d) {
+                clearTimeout(timer);
+                finish(d && d.lang === 'zh' ? 'zh' : 'en');
+              })
+              .catch(function () {
+                clearTimeout(timer);
+                finish(guess());
+              });
+          } catch (e) {
+            clearTimeout(timer);
+            finish(guess());
+          }
+        }
         window.t = t;
         window.setLang = setLang;
         window.getLang = function () {
           return cur;
         };
-        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply);
-        else apply();
+        function onReady() {
+          domReady = true;
+          if (resolved) apply();
+        }
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', onReady);
+        else onReady();
       })();
     </script>
 
