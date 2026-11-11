@@ -29,6 +29,20 @@ Section pages are built from entries: **Concerts** = tag `concert`; **Music** = 
 Pages that exist but are not in the menu: `/archive/` (search), `/history/`, `/tags/<tag>/`.
 To add one to the menu, add one line to `NAV_TOP` in `src/config.ts` (plus a label key in the dictionary).
 
+## Logo artwork
+
+`design/fhsb-logo-original.png` is the official logo (white background). Derived files:
+
+- `public/images/logo-purple.png` + `logo-ink.png`: two transparent layers used on the loading screen. The ink layer is a CSS
+  mask, so the black lettering follows the light/dark theme.
+- `public/images/logo-parts/`: **38 single objects** (every ring, stick, dot, tube and letter) as separate transparent PNGs, for
+  animation. `manifest.json` gives each piece's name, colour (`purple` or `ink`), group (`icon`, `fhsb`, `name`) and its
+  x / y / width / height on a shared 2619 x 1736 canvas, so the pieces can be put back exactly where they started. Sticks and
+  rings that touch in the logo were separated geometrically and are each drawn complete. `design/logo-parts-overview.png`
+  is a contact sheet of all pieces.
+- `design/tools/`: the Python scripts that produced them. Create a virtual environment, `pip install pillow numpy scipy`, then run
+  `python -I design/tools/cut_logo.py design/fhsb-logo-original.png out/parts out/overview.png`.
+
 ## Privacy rules
 
 - The band has **no public email**. Never add a personal or login email to the repo, the site or the

@@ -1,0 +1,393 @@
+{
+ "source": "FHSB official logo (cut into single objects)",
+ "canvas": {
+  "width": 2619,
+  "height": 1736
+ },
+ "colors": {
+  "purple": "#726ccf",
+  "ink": "#1d1916"
+ },
+ "parts": [
+  {
+   "name": "icon1-ring",
+   "file": "icon1-ring.png",
+   "group": "icon",
+   "color": "purple",
+   "x": 161,
+   "y": 291,
+   "width": 327,
+   "height": 327
+  },
+  {
+   "name": "icon1-stick",
+   "file": "icon1-stick.png",
+   "group": "icon",
+   "color": "purple",
+   "x": 3,
+   "y": 153,
+   "width": 354,
+   "height": 525
+  },
+  {
+   "name": "icon2-ring",
+   "file": "icon2-ring.png",
+   "group": "icon",
+   "color": "purple",
+   "x": 563,
+   "y": 219,
+   "width": 472,
+   "height": 472
+  },
+  {
+   "name": "icon3-ring",
+   "file": "icon3-ring.png",
+   "group": "icon",
+   "color": "purple",
+   "x": 1091,
+   "y": 149,
+   "width": 609,
+   "height": 609
+  },
+  {
+   "name": "icon3-stick",
+   "file": "icon3-stick.png",
+   "group": "icon",
+   "color": "purple",
+   "x": 1628,
+   "y": 149,
+   "width": 283,
+   "height": 425
+  },
+  {
+   "name": "icon4-ring-outer",
+   "file": "icon4-ring-outer.png",
+   "group": "icon",
+   "color": "purple",
+   "x": 1868,
+   "y": 80,
+   "width": 747,
+   "height": 747
+  },
+  {
+   "name": "icon4-ring-inner",
+   "file": "icon4-ring-inner.png",
+   "group": "icon",
+   "color": "purple",
+   "x": 2017,
+   "y": 229,
+   "width": 449,
+   "height": 449
+  },
+  {
+   "name": "icon4-stick",
+   "file": "icon4-stick.png",
+   "group": "icon",
+   "color": "purple",
+   "x": 2215,
+   "y": 3,
+   "width": 311,
+   "height": 481
+  },
+  {
+   "name": "icon2-dot",
+   "file": "icon2-dot.png",
+   "group": "icon",
+   "color": "purple",
+   "x": 720,
+   "y": 375,
+   "width": 159,
+   "height": 159
+  },
+  {
+   "name": "icon3-tube-1",
+   "file": "icon3-tube-1.png",
+   "group": "icon",
+   "color": "purple",
+   "x": 1268,
+   "y": 265,
+   "width": 235,
+   "height": 194
+  },
+  {
+   "name": "icon3-tube-2",
+   "file": "icon3-tube-2.png",
+   "group": "icon",
+   "color": "purple",
+   "x": 1189,
+   "y": 400,
+   "width": 233,
+   "height": 192
+  },
+  {
+   "name": "icon3-dot-1",
+   "file": "icon3-dot-1.png",
+   "group": "icon",
+   "color": "purple",
+   "x": 1517,
+   "y": 378,
+   "width": 80,
+   "height": 79
+  },
+  {
+   "name": "icon3-dot-2",
+   "file": "icon3-dot-2.png",
+   "group": "icon",
+   "color": "purple",
+   "x": 1460,
+   "y": 475,
+   "width": 80,
+   "height": 79
+  },
+  {
+   "name": "icon3-dot-3",
+   "file": "icon3-dot-3.png",
+   "group": "icon",
+   "color": "purple",
+   "x": 1402,
+   "y": 570,
+   "width": 79,
+   "height": 80
+  },
+  {
+   "name": "fhsb-F",
+   "file": "fhsb-F.png",
+   "group": "fhsb",
+   "color": "ink",
+   "x": 431,
+   "y": 916,
+   "width": 351,
+   "height": 517
+  },
+  {
+   "name": "fhsb-H",
+   "file": "fhsb-H.png",
+   "group": "fhsb",
+   "color": "ink",
+   "x": 892,
+   "y": 916,
+   "width": 391,
+   "height": 516
+  },
+  {
+   "name": "fhsb-S",
+   "file": "fhsb-S.png",
+   "group": "fhsb",
+   "color": "ink",
+   "x": 1395,
+   "y": 908,
+   "width": 307,
+   "height": 531
+  },
+  {
+   "name": "fhsb-B",
+   "file": "fhsb-B.png",
+   "group": "fhsb",
+   "color": "ink",
+   "x": 1814,
+   "y": 915,
+   "width": 382,
+   "height": 517
+  },
+  {
+   "name": "name-01-F",
+   "file": "name-01-F.png",
+   "group": "name",
+   "color": "purple",
+   "x": 28,
+   "y": 1528,
+   "width": 114,
+   "height": 161
+  },
+  {
+   "name": "name-02-u",
+   "file": "name-02-u.png",
+   "group": "name",
+   "color": "ink",
+   "x": 163,
+   "y": 1575,
+   "width": 95,
+   "height": 116
+  },
+  {
+   "name": "name-03-H",
+   "file": "name-03-H.png",
+   "group": "name",
+   "color": "purple",
+   "x": 290,
+   "y": 1529,
+   "width": 129,
+   "height": 160
+  },
+  {
+   "name": "name-04-s",
+   "file": "name-04-s.png",
+   "group": "name",
+   "color": "ink",
+   "x": 443,
+   "y": 1573,
+   "width": 82,
+   "height": 118
+  },
+  {
+   "name": "name-05-i",
+   "file": "name-05-i.png",
+   "group": "name",
+   "color": "ink",
+   "x": 545,
+   "y": 1527,
+   "width": 26,
+   "height": 161
+  },
+  {
+   "name": "name-06-n",
+   "file": "name-06-n.png",
+   "group": "name",
+   "color": "ink",
+   "x": 601,
+   "y": 1573,
+   "width": 96,
+   "height": 115
+  },
+  {
+   "name": "name-07-g",
+   "file": "name-07-g.png",
+   "group": "name",
+   "color": "ink",
+   "x": 719,
+   "y": 1574,
+   "width": 103,
+   "height": 158
+  },
+  {
+   "name": "name-08-S",
+   "file": "name-08-S.png",
+   "group": "name",
+   "color": "purple",
+   "x": 901,
+   "y": 1527,
+   "width": 118,
+   "height": 164
+  },
+  {
+   "name": "name-09-y",
+   "file": "name-09-y.png",
+   "group": "name",
+   "color": "ink",
+   "x": 1028,
+   "y": 1575,
+   "width": 106,
+   "height": 157
+  },
+  {
+   "name": "name-10-m",
+   "file": "name-10-m.png",
+   "group": "name",
+   "color": "ink",
+   "x": 1149,
+   "y": 1573,
+   "width": 163,
+   "height": 115
+  },
+  {
+   "name": "name-11-p",
+   "file": "name-11-p.png",
+   "group": "name",
+   "color": "ink",
+   "x": 1342,
+   "y": 1574,
+   "width": 107,
+   "height": 157
+  },
+  {
+   "name": "name-12-h",
+   "file": "name-12-h.png",
+   "group": "name",
+   "color": "ink",
+   "x": 1472,
+   "y": 1528,
+   "width": 95,
+   "height": 160
+  },
+  {
+   "name": "name-13-o",
+   "file": "name-13-o.png",
+   "group": "name",
+   "color": "ink",
+   "x": 1590,
+   "y": 1573,
+   "width": 112,
+   "height": 118
+  },
+  {
+   "name": "name-14-n",
+   "file": "name-14-n.png",
+   "group": "name",
+   "color": "ink",
+   "x": 1726,
+   "y": 1573,
+   "width": 96,
+   "height": 116
+  },
+  {
+   "name": "name-15-i",
+   "file": "name-15-i.png",
+   "group": "name",
+   "color": "ink",
+   "x": 1851,
+   "y": 1527,
+   "width": 26,
+   "height": 161
+  },
+  {
+   "name": "name-16-c",
+   "file": "name-16-c.png",
+   "group": "name",
+   "color": "ink",
+   "x": 1899,
+   "y": 1573,
+   "width": 98,
+   "height": 118
+  },
+  {
+   "name": "name-17-B",
+   "file": "name-17-B.png",
+   "group": "name",
+   "color": "purple",
+   "x": 2077,
+   "y": 1529,
+   "width": 126,
+   "height": 163
+  },
+  {
+   "name": "name-18-a",
+   "file": "name-18-a.png",
+   "group": "name",
+   "color": "ink",
+   "x": 2218,
+   "y": 1574,
+   "width": 92,
+   "height": 117
+  },
+  {
+   "name": "name-19-n",
+   "file": "name-19-n.png",
+   "group": "name",
+   "color": "ink",
+   "x": 2340,
+   "y": 1573,
+   "width": 95,
+   "height": 115
+  },
+  {
+   "name": "name-20-d",
+   "file": "name-20-d.png",
+   "group": "name",
+   "color": "ink",
+   "x": 2457,
+   "y": 1528,
+   "width": 105,
+   "height": 162
+  }
+ ]
+}
