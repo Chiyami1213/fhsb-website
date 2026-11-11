@@ -15,7 +15,7 @@ export const DICT: Record<string, Entry> = {
   'nav.documents': { en: 'Documents', zh: '檔案庫' },
   'nav.contact': { en: 'Contact', zh: '聯絡我們' },
   'nav.settings': { en: 'Settings', zh: '設定' },
-  'nav.archive': { en: 'Archive', zh: '典藏' },
+  'nav.search': { en: 'Search', zh: '搜尋' },
   'menu.open': { en: 'Open menu', zh: '開啟選單' },
   'menu.aria': { en: 'Main menu', zh: '主選單' },
   'lang.aria': { en: 'Language', zh: '語言' },
@@ -99,20 +99,20 @@ export const DICT: Record<string, Entry> = {
     zh: '點選右上角的地球按鈕，即可在 English 與中文之間切換。',
   },
   'help.search': {
-    en: 'Use the Archive page to search everything on the site.',
-    zh: '可使用「典藏」頁面搜尋本站的所有內容。',
+    en: 'Use the Search page to look through everything on the site.',
+    zh: '可使用「搜尋」頁面查找本站的所有內容。',
   },
   'help.locked': {
     en: 'Files marked “approval required” are not public. Press “Request access”; you will get a private status page to check back on.',
     zh: '標示為「需核准」的檔案並未公開。請按「申請存取」，系統會提供一個私人的狀態頁面，供你稍後回來查看。',
   },
 
-  // ---- archive ----
-  'archive.title': { en: 'Archive', zh: '典藏' },
-  'archive.intro': { en: 'Search everything on the site.', zh: '搜尋本站的所有內容。' },
-  'archive.search': { en: 'Search…', zh: '搜尋…' },
-  'archive.all': { en: 'All', zh: '全部' },
-  'archive.empty': { en: 'No matching entries.', zh: '沒有符合的項目。' },
+  // ---- search page ----
+  'search.title': { en: 'Search', zh: '搜尋' },
+  'search.intro': { en: 'Search everything on the site.', zh: '搜尋本站的所有內容。' },
+  'search.placeholder': { en: 'Search…', zh: '搜尋…' },
+  'search.all': { en: 'All', zh: '全部' },
+  'search.empty': { en: 'No matching entries.', zh: '沒有符合的項目。' },
   'type.project': { en: 'Project', zh: '專案' },
   'type.writing': { en: 'Writing', zh: '文章' },
   'type.note': { en: 'Note', zh: '筆記' },
@@ -125,7 +125,7 @@ export const DICT: Record<string, Entry> = {
   'entry.files': { en: 'Downloads', zh: '下載' },
   'entry.locked': { en: 'Approval required', zh: '需核准' },
   'entry.request': { en: 'Request access', zh: '申請存取' },
-  'entry.back': { en: '← Back to archive', zh: '← 回到典藏' },
+  'entry.back': { en: '← Back to search', zh: '← 回到搜尋' },
 
   // ---- request dialog ----
   'req.title': { en: 'Request access', zh: '申請存取' },

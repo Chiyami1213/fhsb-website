@@ -36,7 +36,7 @@ export interface NavItem {
 }
 
 // To add a menu item: add one line here (and a label key in src/i18n/dict.ts).
-// Pages that exist but are not listed (reachable by URL): /archive/, /history/, /music/, /documents/
+// Pages that exist but are not listed (reachable by URL): /search/, /history/, /music/, /documents/
 // To bring one back, add a line such as: { href: '/music/', label: 'nav.music', icon: 'music' },
 export const NAV_TOP: NavItem[] = [
   { href: '/', label: 'nav.home', icon: 'home' },

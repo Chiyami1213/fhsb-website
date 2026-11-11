@@ -8,20 +8,20 @@ const types = ['project', 'writing', 'note', 'media', 'document'];
 const fmt = (d: Date) => d.toISOString().slice(0, 10);
 ---
 
-<Base titleKey="archive.title">
+<Base titleKey="search.title">
   <main class="page">
-    <h1><T k="archive.title" /></h1>
-    <p class="muted"><T k="archive.intro" /></p>
+    <h1><T k="search.title" /></h1>
+    <p class="muted"><T k="search.intro" /></p>
     <input
       id="q"
       class="search"
       type="search"
       autocomplete="off"
-      placeholder={en('archive.search')}
-      data-i18n-placeholder="archive.search"
+      placeholder={en('search.placeholder')}
+      data-i18n-placeholder="search.placeholder"
     />
     <div class="filters" id="filters">
-      <button type="button" class="chip" data-type="" aria-pressed="true"><T k="archive.all" /></button>
+      <button type="button" class="chip" data-type="" aria-pressed="true"><T k="search.all" /></button>
       {
         types.map((t) => (
           <button type="button" class="chip" data-type={t} aria-pressed="false"><T k={`type.${t}`} /></button>
@@ -51,7 +51,7 @@ const fmt = (d: Date) => d.toISOString().slice(0, 10);
         ))
       }
     </ul>
-    <p class="empty" id="none" hidden><T k="archive.empty" /></p>
+    <p class="empty" id="none" hidden><T k="search.empty" /></p>
   </main>
 </Base>
 

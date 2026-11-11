@@ -26,7 +26,7 @@ Entry front matter: `title`, `date`, `type` (project | writing | note | media | 
 Section pages are built from entries: **Concerts** = tag `concert`; **Music** = tags `repertoire` /
 `recording`; **Documents** = `type: document`. Draft entries are never built.
 
-Pages that exist but are not in the menu: `/archive/` (search), `/history/`, `/tags/<tag>/`.
+Pages that exist but are not in the menu: `/search/` (search), `/history/`, `/tags/<tag>/`.
 To add one to the menu, add one line to `NAV_TOP` in `src/config.ts` (plus a label key in the dictionary).
 
 ## Logo artwork

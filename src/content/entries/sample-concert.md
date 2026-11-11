@@ -9,4 +9,4 @@ draft: false
 
 This is a placeholder concert entry. Replace it with a real one: add a new
 Markdown file in `src/content/entries/` with `tags: [concert]` and it will
-appear on the Concerts page and in the Archive.
+appear on the Archive page and in Search.

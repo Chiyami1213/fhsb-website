@@ -177,7 +177,7 @@ test('switching EN -> CN -> EN, persistence and langchange event', async () => {
 });
 
 test('placeholders, {label} variables and attributes are translated', async () => {
-  let dom = await load('archive/index.html', { saved: { 'fhsb-lang': 'zh' } });
+  let dom = await load('search/index.html', { saved: { 'fhsb-lang': 'zh' } });
   assert.equal(dom.window.document.querySelector('#q').getAttribute('placeholder'), '搜尋…');
   dom.window.close();
 
@@ -205,7 +205,7 @@ test('every key used in the built HTML and in client scripts exists in the dicti
   }
   // keys referenced from client-side code and templates
   const call = /\b(?:w\.|window\.)?t\(\s*'([\w.]+)'/g;
-  const literal = /'((?:req|status|type|nav|theme|help|archive|settings|contact|about|history|concerts|music|documents|entry|tags|notfound|menu|lang|loader|site)\.[\w.]+)'/g;
+  const literal = /'((?:req|status|type|nav|theme|help|search|settings|contact|about|history|concerts|music|documents|entry|tags|notfound|menu|lang|loader|site)\.[\w.]+)'/g;
   for (const f of [...walk(SRC, '.astro'), ...walk(SRC, '.ts')]) {
     if (f.endsWith('dict.ts')) continue;
     const s = fs.readFileSync(f, 'utf8');
