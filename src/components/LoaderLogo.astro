@@ -1,0 +1,80 @@
+---
+// Animated FHSB logo for the loading screen (and the hand-over to the home page).
+//  row 1: the four purple instruments slide in from the right, one after another
+//  row 2: the big FHSB letters slide in from the left, letter by letter
+//  row 3: the four purple capitals F H S B appear together, then move apart to their places while the
+//         rest of "FuHsing Symphonic Band" fades into the gaps
+// After the window opens the logo stays; rows 1-2 then leave the way they came (html.leave), and row 3
+// (.lp-name) morphs into the home-page subtitle (html.morph, see the script in Base.astro).
+// Positions come from src/data/loader-layout.json (made by design/tools/make_loader_assets.py).
+import layout from '../data/loader-layout.json';
+
+interface Props {
+  class?: string;
+}
+const { class: cls = '' } = Astro.props;
+const { canvas } = layout;
+type Box = { x: number; y: number; w: number; h: number };
+const pct = (v: number, of: number) => ((v / of) * 100).toFixed(3);
+const box = (p: Box) =>
+  `left:${pct(p.x, canvas.w)}%;top:${pct(p.y, canvas.h)}%;width:${pct(p.w, canvas.w)}%;height:${pct(p.h, canvas.h)}%`;
+
+// row 3 is one unit (.lp-name) so it can be moved and scaled as a whole
+const purple = layout.name.purple;
+const ink = layout.name.ink;
+const all = [...purple, ...ink];
+const nameBox: Box = {
+  x: Math.min(...all.map((p) => p.x)),
+  y: Math.min(...all.map((p) => p.y)),
+  w: Math.max(...all.map((p) => p.x + p.w)) - Math.min(...all.map((p) => p.x)),
+  h: Math.max(...all.map((p) => p.y + p.h)) - Math.min(...all.map((p) => p.y)),
+};
+const rel = (p: Box) =>
+  `left:${pct(p.x - nameBox.x, nameBox.w)}%;top:${pct(p.y - nameBox.y, nameBox.h)}%;` +
+  `width:${pct(p.w, nameBox.w)}%;height:${pct(p.h, nameBox.h)}%`;
+
+// where the purple capitals start: bunched together at the centre of the row
+const gap = 18; // canvas px between the bunched letters
+const bunchWidth = purple.reduce((sum, p) => sum + p.w, 0) + gap * (purple.length - 1);
+let cursor = nameBox.x + nameBox.w / 2 - bunchWidth / 2;
+const start = purple.map((p) => {
+  const x0 = cursor;
+  cursor += p.w + gap;
+  return (((x0 - p.x) / p.w) * 100).toFixed(2); // translateX(%) is relative to the letter's own width
+});
+const n = layout.instruments.length;
+---
+
+<div class:list={['logo-anim', cls]} style={`aspect-ratio:${canvas.w}/${canvas.h}`} aria-hidden="true">
+  {
+    layout.instruments.map((p, i) => (
+      <img
+        class="lp from-right"
+        src={p.src}
+        alt=""
+        decoding="async"
+        style={`${box(p)};--d:${(0.05 + 0.18 * i).toFixed(2)}s;--xd:${(0.12 * (n - 1 - i)).toFixed(2)}s`}
+      />
+    ))
+  }
+  {
+    layout.fhsb.map((p, i) => (
+      <span
+        class="lp from-left ink"
+        style={`${box(p)};--d:${(0.35 + 0.08 * i).toFixed(2)}s;--xd:${(0.08 * (layout.fhsb.length - 1 - i)).toFixed(2)}s;--m:url(${p.src})`}
+      />
+    ))
+  }
+  <div class="lp-name" style={box(nameBox)}>
+    {
+      purple.map((p, i) => (
+        <img class="lp gather" src={p.src} alt="" decoding="async" style={`${rel(p)};--d:0.85s;--tx:${start[i]}%`} />
+      ))
+    }
+    {
+      ink.map((p, i) => (
+        <span class="lp rise ink" style={`${rel(p)};--d:${(1.4 + 0.12 * i).toFixed(2)}s;--m:url(${p.src})`} />
+      ))
+    }
+  </div>
+</div>

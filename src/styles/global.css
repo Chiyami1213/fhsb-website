@@ -53,7 +53,7 @@ body {
   line-height: 1.65;
   -webkit-text-size-adjust: 100%;
 }
-html.i18n-pending body {
+html.i18n-pending .shell {
   visibility: hidden;
 }
 a {
@@ -361,6 +361,7 @@ p {
   display: none;
   position: fixed;
   inset: 0;
+  overflow: hidden;
   z-index: 100;
   color: var(--fg);
   font-family: var(--serif);
@@ -402,28 +403,168 @@ html.loading.open .loader .panel.r {
   gap: 18px;
   transition: opacity 0.4s ease;
 }
-html.loading.open .loader .center {
+.loader .ltext {
+  transition: opacity 0.4s ease;
+}
+html.loading.open .loader .ltext {
   opacity: 0;
 }
 .loader .char {
-  width: min(240px, 62vw);
+  width: min(300px, 74vw);
   display: block;
   animation: bob 1.6s ease-in-out infinite;
 }
-.logo {
+.logo-anim {
   position: relative;
 }
-.logo img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-.logo .logo-ink {
+.logo-anim .lp {
   position: absolute;
-  inset: 0;
+  display: block;
+  animation-duration: 0.55s;
+  animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+  animation-delay: var(--d, 0s);
+  animation-fill-mode: both;
+}
+.logo-anim .ink {
   background: var(--fg);
-  -webkit-mask: url(/images/logo-ink.png) center / 100% 100% no-repeat;
-  mask: url(/images/logo-ink.png) center / 100% 100% no-repeat;
+  -webkit-mask: var(--m) center / 100% 100% no-repeat;
+  mask: var(--m) center / 100% 100% no-repeat;
+}
+.logo-anim .from-right {
+  animation-name: lp-from-right;
+}
+.logo-anim .from-left {
+  animation-name: lp-from-left;
+}
+.logo-anim .gather {
+  animation-name: lp-gather;
+  animation-duration: 1.15s;
+}
+.logo-anim .rise {
+  animation-name: lp-rise;
+  animation-duration: 0.45s;
+}
+.logo-anim .lp-name {
+  position: absolute;
+  will-change: transform, opacity;
+}
+/* after the window opens: rows 1-2 leave the way they came (last in, first out) */
+html.leave .logo-anim .from-right {
+  animation-name: lp-exit-right;
+  animation-duration: 0.5s;
+  animation-timing-function: cubic-bezier(0.5, 0, 0.9, 0.4);
+  animation-delay: var(--xd, 0s);
+}
+html.leave .logo-anim .from-left {
+  animation-name: lp-exit-left;
+  animation-duration: 0.5s;
+  animation-timing-function: cubic-bezier(0.5, 0, 0.9, 0.4);
+  animation-delay: var(--xd, 0s);
+}
+@keyframes lp-exit-right {
+  from {
+    transform: none;
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  to {
+    transform: translateX(110vw);
+    opacity: 0;
+  }
+}
+@keyframes lp-exit-left {
+  from {
+    transform: none;
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-110vw);
+    opacity: 0;
+  }
+}
+/* home title: hidden while the logo is on screen, then fades in as row 3 lands on it */
+html.loading .home h1 span {
+  opacity: 0;
+}
+html.morph .home h1 .en {
+  opacity: 1;
+  transition: opacity 0.6s ease 0.45s;
+}
+html.morph .home h1 .zh {
+  opacity: 1;
+  transition: opacity 0.7s ease 0.65s;
+}
+@keyframes lp-from-right {
+  from {
+    transform: translateX(110vw);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+@keyframes lp-from-left {
+  from {
+    transform: translateX(-110vw);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+/* purple capitals: fade in bunched together, hold a moment, then move apart to their places */
+@keyframes lp-gather {
+  0% {
+    opacity: 0;
+    transform: translateX(var(--tx, 0%));
+  }
+  26% {
+    opacity: 1;
+    transform: translateX(var(--tx, 0%));
+  }
+  48% {
+    opacity: 1;
+    transform: translateX(var(--tx, 0%));
+    animation-timing-function: cubic-bezier(0.65, 0, 0.25, 1);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes lp-rise {
+  from {
+    opacity: 0;
+    transform: translateY(30%);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes lp-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.loader .logo-anim.char {
+  animation: none;
 }
 .loader .egg {
   display: block;
@@ -483,6 +624,13 @@ html.loading.open .shell {
   transition: opacity 0.9s ease, transform 0.9s ease;
 }
 @media (prefers-reduced-motion: reduce) {
+  .logo-anim .from-right,
+  .logo-anim .from-left,
+  .logo-anim .gather,
+  .logo-anim .rise {
+    animation-name: lp-fade;
+    animation-duration: 0.4s;
+  }
   .loader .char,
   .dots i {
     animation: none;

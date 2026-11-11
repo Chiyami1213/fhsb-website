@@ -33,8 +33,13 @@ To add one to the menu, add one line to `NAV_TOP` in `src/config.ts` (plus a lab
 
 `design/fhsb-logo-original.png` is the official logo (white background). Derived files:
 
-- `public/images/logo-purple.png` + `logo-ink.png`: two transparent layers used on the loading screen. The ink layer is a CSS
-  mask, so the black lettering follows the light/dark theme.
+- `public/images/loader/`: the loading-screen assets (the 4 instruments, the 4 big FHSB letters, and the name row as 4 purple
+  capitals + 4 text segments), grouped from the cut pieces by `design/tools/make_loader_assets.py`; their positions are in
+  `src/data/loader-layout.json`. Black text is drawn through a CSS mask so it follows the light/dark theme.
+- **Loading animation**: `src/components/LoaderLogo.astro` + the `.logo-anim` rules in `src/styles/global.css`; the timeline
+  is the script in `src/layouts/Base.astro` (instruments slide in from the right, FHSB from the left, the purple F H S B
+  gather then spread while the name fills in; window opens at 2.6 s; rows 1-2 leave at 3.5 s; the name row morphs into the home
+  title at 4.2 s; done at 5.4 s). It plays on the first visit of a browser session and on every reload.
 - `public/images/logo-parts/`: **38 single objects** (every ring, stick, dot, tube and letter) as separate transparent PNGs, for
   animation. `manifest.json` gives each piece's name, colour (`purple` or `ink`), group (`icon`, `fhsb`, `name`) and its
   x / y / width / height on a shared 2619 x 1736 canvas, so the pieces can be put back exactly where they started. Sticks and

@@ -1,0 +1,128 @@
+{
+ "canvas": {
+  "w": 2619,
+  "h": 1736
+ },
+ "instruments": [
+  {
+   "src": "/images/loader/instrument-1.png",
+   "x": 3,
+   "y": 153,
+   "w": 485,
+   "h": 525
+  },
+  {
+   "src": "/images/loader/instrument-2.png",
+   "x": 563,
+   "y": 219,
+   "w": 472,
+   "h": 472
+  },
+  {
+   "src": "/images/loader/instrument-3.png",
+   "x": 1091,
+   "y": 149,
+   "w": 820,
+   "h": 609
+  },
+  {
+   "src": "/images/loader/instrument-4.png",
+   "x": 1868,
+   "y": 3,
+   "w": 747,
+   "h": 824
+  }
+ ],
+ "fhsb": [
+  {
+   "src": "/images/loader/fhsb-F.png",
+   "x": 431,
+   "y": 916,
+   "w": 351,
+   "h": 517
+  },
+  {
+   "src": "/images/loader/fhsb-H.png",
+   "x": 892,
+   "y": 916,
+   "w": 391,
+   "h": 516
+  },
+  {
+   "src": "/images/loader/fhsb-S.png",
+   "x": 1395,
+   "y": 908,
+   "w": 307,
+   "h": 531
+  },
+  {
+   "src": "/images/loader/fhsb-B.png",
+   "x": 1814,
+   "y": 915,
+   "w": 382,
+   "h": 517
+  }
+ ],
+ "name": {
+  "purple": [
+   {
+    "src": "/images/loader/word-F.png",
+    "x": 28,
+    "y": 1528,
+    "w": 114,
+    "h": 161
+   },
+   {
+    "src": "/images/loader/word-H.png",
+    "x": 290,
+    "y": 1529,
+    "w": 129,
+    "h": 160
+   },
+   {
+    "src": "/images/loader/word-S.png",
+    "x": 901,
+    "y": 1527,
+    "w": 118,
+    "h": 164
+   },
+   {
+    "src": "/images/loader/word-B.png",
+    "x": 2077,
+    "y": 1529,
+    "w": 126,
+    "h": 163
+   }
+  ],
+  "ink": [
+   {
+    "src": "/images/loader/word-ink-1.png",
+    "x": 163,
+    "y": 1575,
+    "w": 95,
+    "h": 116
+   },
+   {
+    "src": "/images/loader/word-ink-2.png",
+    "x": 443,
+    "y": 1527,
+    "w": 379,
+    "h": 205
+   },
+   {
+    "src": "/images/loader/word-ink-3.png",
+    "x": 1028,
+    "y": 1527,
+    "w": 969,
+    "h": 205
+   },
+   {
+    "src": "/images/loader/word-ink-4.png",
+    "x": 2218,
+    "y": 1528,
+    "w": 344,
+    "h": 163
+   }
+  ]
+ }
+}

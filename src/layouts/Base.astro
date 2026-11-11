@@ -1,7 +1,7 @@
 ---
 import '../styles/global.css';
 import Icon from '../components/Icon.astro';
-import LogoMark from '../components/LogoMark.astro';
+import LoaderLogo from '../components/LoaderLogo.astro';
 import { DICT, en } from '../i18n/dict';
 import { SITE, NAV_TOP, NAV_BOTTOM, EASTER_EGG_URL, ALLOW_SEARCH_INDEXING } from '../config';
 
@@ -192,7 +192,9 @@ const metaDesc = description ?? `${SITE.titleZh} ${SITE.titleEn} (${SITE.short})
       })();
     </script>
 
-    <!-- 3. loading screen: first visit of a session + every reload, never on /admin -->
+    <!-- 3. loading screen: first visit of a session + every reload, never on /admin.
+         Timeline: logo builds (0-2.2s) -> window opens (2.6s) -> logo stays, rows 1-2 leave (3.5s)
+         -> row 3 morphs into the home-page title (4.2s) -> cleanup (5.4s). -->
     <script is:inline>
       (function () {
         try {
@@ -202,16 +204,53 @@ const metaDesc = description ?? `${SITE.titleZh} ${SITE.titleEn} (${SITE.short})
           if (!reload && sessionStorage.getItem('fhsb-seen')) return;
           sessionStorage.setItem('fhsb-seen', '1');
           var d = document.documentElement;
+          var calm = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
           d.classList.add('loading');
-          setTimeout(function () {
-            d.classList.add('open');
-          }, 2000);
-          setTimeout(function () {
-            d.classList.remove('loading');
-            d.classList.remove('open');
+          function done() {
+            d.classList.remove('loading', 'open', 'leave', 'morph');
             var l = document.getElementById('loader');
             if (l) l.remove();
-          }, 3000);
+          }
+          // row 3 flies (and scales) onto the home-page subtitle while the real text fades in;
+          // on other pages there is nothing to land on, so it just fades away
+          function morph() {
+            try {
+              var row = document.querySelector('.lp-name');
+              if (!row) return;
+              var en = document.querySelector('.home h1 .en');
+              if (!en) {
+                row.style.transition = 'opacity 0.5s ease';
+                row.style.opacity = '0';
+                return;
+              }
+              var r = row.getBoundingClientRect();
+              var range = document.createRange();
+              range.selectNodeContents(en);
+              var t = range.getBoundingClientRect();
+              if (!r.width || !t.width) return;
+              var dx = t.left + t.width / 2 - (r.left + r.width / 2);
+              var dy = t.top + t.height / 2 - (r.top + r.height / 2);
+              row.style.transformOrigin = '50% 50%';
+              row.style.transition = 'transform 0.85s cubic-bezier(0.65, 0, 0.25, 1), opacity 0.5s ease 0.45s';
+              row.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(' + t.width / r.width + ')';
+              row.style.opacity = '0';
+            } catch (e) {}
+          }
+          setTimeout(function () {
+            d.classList.add('open');
+          }, 2600);
+          if (calm) {
+            setTimeout(done, 3600);
+            return;
+          }
+          setTimeout(function () {
+            d.classList.add('leave');
+          }, 3500);
+          setTimeout(function () {
+            d.classList.add('morph');
+            morph();
+          }, 4200);
+          setTimeout(done, 5400);
         } catch (e) {}
       })();
     </script>
@@ -284,10 +323,10 @@ const metaDesc = description ?? `${SITE.titleZh} ${SITE.titleEn} (${SITE.short})
         {
           EASTER_EGG_URL ? (
             <a class="egg" href={EASTER_EGG_URL} target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">
-              <LogoMark class="char" />
+              <LoaderLogo class="char" />
             </a>
           ) : (
-            <LogoMark class="char" />
+            <LoaderLogo class="char" />
           )
         }
         <div class="ltext">
