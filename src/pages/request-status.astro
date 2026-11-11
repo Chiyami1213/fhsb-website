@@ -1,0 +1,68 @@
+---
+import Base from '../layouts/Base.astro';
+import T from '../components/T.astro';
+---
+
+<Base titleKey="status.title" noindex>
+  <main class="page">
+    <h1><T k="status.title" /></h1>
+    <p id="file" class="muted"></p>
+    <p id="state"><T k="status.loading" /></p>
+    <p id="action" hidden><a id="dl" class="btn" target="_blank" rel="noopener noreferrer"><T k="status.link" /></a></p>
+    <p class="muted" style="font-size:.85rem"><T k="status.privacy" /></p>
+  </main>
+</Base>
+
+<script>
+  const w = window as any;
+  const stateEl = document.getElementById('state')!;
+  const fileEl = document.getElementById('file')!;
+  const actionEl = document.getElementById('action')!;
+  const dl = document.getElementById('dl') as HTMLAnchorElement;
+
+  type Result = { kind: 'missing' | 'error' } | { kind: 'ok'; status: string; fileLabel: string; link?: string };
+  let result: Result | null = null;
+
+  function render() {
+    if (!result) return;
+    actionEl.hidden = true;
+    fileEl.textContent = '';
+    if (result.kind === 'missing') return void (stateEl.textContent = w.t('status.missing'));
+    if (result.kind === 'error') return void (stateEl.textContent = w.t('status.error'));
+    fileEl.textContent = w.t('req.file', { label: result.fileLabel });
+    if (result.status === 'approved') {
+      if (result.link && /^https:\/\//i.test(result.link)) {
+        stateEl.textContent = w.t('status.approved');
+        dl.href = result.link;
+        actionEl.hidden = false;
+      } else {
+        stateEl.textContent = w.t('status.approved.nolink');
+      }
+    } else if (result.status === 'declined') {
+      stateEl.textContent = w.t('status.declined');
+    } else {
+      stateEl.textContent = w.t('status.pending');
+    }
+  }
+  document.addEventListener('langchange', render);
+
+  (async () => {
+    const token = new URLSearchParams(location.search).get('t') || '';
+    if (!/^[a-f0-9]{32}$/.test(token)) {
+      result = { kind: 'missing' };
+      return render();
+    }
+    try {
+      const res = await fetch('/api/status?t=' + token, { cache: 'no-store' });
+      if (res.status === 404) result = { kind: 'missing' };
+      else if (!res.ok) result = { kind: 'error' };
+      else {
+        const d = await res.json();
+        result = { kind: 'ok', status: d.status, fileLabel: d.fileLabel || '', link: d.link };
+      }
+    } catch {
+      result = { kind: 'error' };
+    }
+    render();
+  })();
+</script>

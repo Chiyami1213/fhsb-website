@@ -1,0 +1,11 @@
+---
+import { en } from '../i18n/dict';
+interface Props {
+  k: string;
+  html?: boolean;
+}
+const { k, html = false } = Astro.props;
+const text = en(k);
+---
+
+{html ? <span data-i18n-html={k} set:html={text} /> : <span data-i18n={k}>{text}</span>}

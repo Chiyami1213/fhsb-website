@@ -1,0 +1,20 @@
+---
+import T from './T.astro';
+const path = Astro.url.pathname;
+const tabs = [
+  { href: '/music/', label: 'music.tab.all' },
+  { href: '/music/repertoire/', label: 'nav.music.repertoire' },
+  { href: '/music/recordings/', label: 'nav.music.recordings' },
+];
+---
+
+<!-- in-page tab row (works when the menu is collapsed / on phones) -->
+<div class="subtabs">
+  {
+    tabs.map((t) => (
+      <a href={t.href} aria-current={path === t.href ? 'page' : undefined}>
+        <T k={t.label} />
+      </a>
+    ))
+  }
+</div>

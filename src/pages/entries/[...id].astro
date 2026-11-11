@@ -1,0 +1,163 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import T from '../../components/T.astro';
+import { getEntries, type Entry } from '../../lib/entries';
+
+export async function getStaticPaths() {
+  const entries = await getEntries();
+  return entries.map((entry) => ({ params: { id: entry.id }, props: { entry } }));
+}
+interface Props {
+  entry: Entry;
+}
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+const fmt = d.date.toISOString().slice(0, 10);
+---
+
+<Base title={d.title} description={d.description}>
+  <main class="page">
+    <p class="meta"><a href="/archive/"><T k="entry.back" /></a></p>
+    <h1>{d.title}</h1>
+    <div class="meta">{fmt} · <T k={`type.${d.type}`} /></div>
+    {
+      d.tags.length > 0 && (
+        <div class="chips">
+          {d.tags.map((t) => (
+            <a class="chip" href={`/tags/${encodeURIComponent(t)}/`}>{t}</a>
+          ))}
+        </div>
+      )
+    }
+    <div class="prose"><Content /></div>
+
+    {
+      (d.files.length > 0 || d.locked.length > 0) && (
+        <>
+          <h2><T k="entry.files" /></h2>
+          <div class="downloads">
+            {d.files.map((f) => (
+              <div class="dl">
+                <a href={f.href} download>{f.label}</a>
+              </div>
+            ))}
+            {d.locked.map((f) => (
+              <div class="dl">
+                <span>{f.label}</span>
+                <span class="tag"><T k="entry.locked" /></span>
+                <button class="btn ghost req-btn" type="button" data-id={f.id} data-label={f.label}>
+                  <T k="entry.request" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </>
+      )
+    }
+  </main>
+
+  {
+    d.locked.length > 0 && (
+      <dialog id="req-dialog">
+        <form id="req-form" method="dialog" novalidate>
+          <h2 style="margin-top:0"><T k="req.title" /></h2>
+          <p id="req-file" class="muted"></p>
+          <div class="field">
+            <label for="req-name"><T k="req.name" /></label>
+            <input id="req-name" name="name" maxlength="100" autocomplete="name" required />
+          </div>
+          <div class="field">
+            <label for="req-email"><T k="req.email" /></label>
+            <input id="req-email" name="email" type="email" maxlength="200" autocomplete="email" required />
+          </div>
+          <div class="field">
+            <label for="req-reason"><T k="req.reason" /></label>
+            <textarea id="req-reason" name="reason" rows="3" maxlength="500" />
+          </div>
+          <div class="hp" aria-hidden="true">
+            <label>Website <input name="website" tabindex="-1" autocomplete="off" /></label>
+          </div>
+          <p class="muted" style="font-size:.85rem"><T k="req.note" /></p>
+          <p class="msg-err" id="req-err" role="alert"></p>
+          <div class="form-actions">
+            <button class="btn ghost" type="button" id="req-cancel"><T k="req.cancel" /></button>
+            <button class="btn" type="submit" id="req-submit"><T k="req.submit" /></button>
+          </div>
+        </form>
+      </dialog>
+    )
+  }
+</Base>
+
+<script>
+  const dialog = document.getElementById('req-dialog') as HTMLDialogElement | null;
+  if (dialog) {
+    const form = document.getElementById('req-form') as HTMLFormElement;
+    const fileEl = document.getElementById('req-file')!;
+    const errEl = document.getElementById('req-err')!;
+    const submit = document.getElementById('req-submit') as HTMLButtonElement;
+    const w = window as any;
+    let fileId = '';
+    let fileLabel = '';
+    let errKey = '';
+
+    const render = () => {
+      fileEl.textContent = fileLabel ? w.t('req.file', { label: fileLabel }) : '';
+      errEl.textContent = errKey ? w.t(errKey) : '';
+    };
+    document.addEventListener('langchange', render);
+
+    document.querySelectorAll<HTMLButtonElement>('.req-btn').forEach((b) =>
+      b.addEventListener('click', () => {
+        fileId = b.dataset.id || '';
+        fileLabel = b.dataset.label || '';
+        errKey = '';
+        render();
+        dialog.showModal();
+      }),
+    );
+    document.getElementById('req-cancel')!.addEventListener('click', () => dialog.close());
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fd = new FormData(form);
+      const body = {
+        id: fileId,
+        label: fileLabel,
+        name: String(fd.get('name') || '').trim(),
+        email: String(fd.get('email') || '').trim(),
+        reason: String(fd.get('reason') || '').trim(),
+        website: String(fd.get('website') || ''),
+      };
+      if (!body.name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email)) {
+        errKey = 'req.err.invalid';
+        render();
+        return;
+      }
+      errKey = '';
+      render();
+      submit.disabled = true;
+      submit.textContent = w.t('req.sending');
+      try {
+        const res = await fetch('/api/request', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          location.href = '/request-status/?t=' + encodeURIComponent(data.token);
+          return;
+        }
+        errKey = res.status === 400 ? 'req.err.invalid' : res.status === 429 ? 'req.err.busy' : 'req.err.generic';
+      } catch {
+        errKey = 'req.err.generic';
+      }
+      submit.disabled = false;
+      submit.textContent = w.t('req.submit');
+      render();
+    });
+  }
+</script>

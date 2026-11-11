@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+import T from '../components/T.astro';
+// Placeholder timeline: replace the years below with real milestones.
+const years = ['YYYY', 'YYYY', 'YYYY'];
+---
+
+<Base titleKey="history.title">
+  <main class="page">
+    <h1><T k="history.title" /></h1>
+    <p class="muted"><T k="history.intro" /></p>
+    <ul class="timeline">
+      {
+        years.map((y) => (
+          <li>
+            <div class="year">{y}</div>
+            <div><T k="history.item" /></div>
+          </li>
+        ))
+      }
+    </ul>
+  </main>
+</Base>

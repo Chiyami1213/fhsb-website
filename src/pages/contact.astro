@@ -1,0 +1,38 @@
+---
+import Base from '../layouts/Base.astro';
+import T from '../components/T.astro';
+import Icon from '../components/Icon.astro';
+import { CONTACT } from '../config';
+// The band has no email address; only the links set in src/config.ts are shown.
+const rows = [
+  { key: 'instagram', icon: 'instagram', label: 'contact.instagram' },
+  { key: 'facebook', icon: 'facebook', label: 'contact.facebook' },
+  { key: 'youtube', icon: 'youtube', label: 'contact.youtube' },
+  { key: 'website', icon: 'globe', label: 'contact.website' },
+].filter((r) => CONTACT[r.key as keyof typeof CONTACT]);
+---
+
+<Base titleKey="contact.title">
+  <main class="page">
+    <h1><T k="contact.title" /></h1>
+    {
+      rows.length === 0 ? (
+        <p class="empty"><T k="contact.empty" /></p>
+      ) : (
+        <>
+          <p class="muted"><T k="contact.intro" /></p>
+          <ul class="contact-list">
+            {rows.map((r) => (
+              <li>
+                <a href={CONTACT[r.key as keyof typeof CONTACT]} target="_blank" rel="noopener noreferrer">
+                  <Icon name={r.icon} />
+                  <T k={r.label} />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </>
+      )
+    }
+  </main>
+</Base>

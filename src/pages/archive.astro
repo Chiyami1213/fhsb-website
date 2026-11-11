@@ -1,0 +1,83 @@
+---
+import Base from '../layouts/Base.astro';
+import T from '../components/T.astro';
+import { en } from '../i18n/dict';
+import { getEntries } from '../lib/entries';
+const entries = await getEntries();
+const types = ['project', 'writing', 'note', 'media', 'document'];
+const fmt = (d: Date) => d.toISOString().slice(0, 10);
+---
+
+<Base titleKey="archive.title">
+  <main class="page">
+    <h1><T k="archive.title" /></h1>
+    <p class="muted"><T k="archive.intro" /></p>
+    <input
+      id="q"
+      class="search"
+      type="search"
+      autocomplete="off"
+      placeholder={en('archive.search')}
+      data-i18n-placeholder="archive.search"
+    />
+    <div class="filters" id="filters">
+      <button type="button" class="chip" data-type="" aria-pressed="true"><T k="archive.all" /></button>
+      {
+        types.map((t) => (
+          <button type="button" class="chip" data-type={t} aria-pressed="false"><T k={`type.${t}`} /></button>
+        ))
+      }
+    </div>
+
+    <ul class="entry-list" id="list">
+      {
+        entries.map((e) => (
+          <li
+            class="entry-card"
+            data-type={e.data.type}
+            data-text={[e.data.title, e.data.description ?? '', ...e.data.tags].join(' ').toLowerCase()}
+          >
+            <h3><a href={`/entries/${e.id}/`}>{e.data.title}</a></h3>
+            <div class="meta">{fmt(e.data.date)} · <T k={`type.${e.data.type}`} /></div>
+            {e.data.description && <p>{e.data.description}</p>}
+            {e.data.tags.length > 0 && (
+              <div class="chips">
+                {e.data.tags.map((t) => (
+                  <a class="chip" href={`/tags/${encodeURIComponent(t)}/`}>{t}</a>
+                ))}
+              </div>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+    <p class="empty" id="none" hidden><T k="archive.empty" /></p>
+  </main>
+</Base>
+
+<script>
+  const q = document.getElementById('q') as HTMLInputElement;
+  const items = Array.from(document.querySelectorAll<HTMLElement>('#list > li'));
+  const none = document.getElementById('none')!;
+  const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('#filters .chip'));
+  let type = '';
+  function run() {
+    const term = q.value.trim().toLowerCase();
+    let shown = 0;
+    for (const li of items) {
+      const ok = (!type || li.dataset.type === type) && (!term || (li.dataset.text || '').includes(term));
+      li.hidden = !ok;
+      if (ok) shown++;
+    }
+    none.hidden = shown !== 0;
+  }
+  q.addEventListener('input', run);
+  chips.forEach((c) =>
+    c.addEventListener('click', () => {
+      type = c.dataset.type || '';
+      chips.forEach((x) => x.setAttribute('aria-pressed', String(x === c)));
+      run();
+    }),
+  );
+  run();
+</script>

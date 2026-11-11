@@ -1,0 +1,15 @@
+---
+import Base from '../layouts/Base.astro';
+import T from '../components/T.astro';
+import EntryList from '../components/EntryList.astro';
+import { getEntries } from '../lib/entries';
+const entries = await getEntries((e) => e.data.type === 'document');
+---
+
+<Base titleKey="documents.title">
+  <main class="page">
+    <h1><T k="documents.title" /></h1>
+    <p class="muted"><T k="documents.intro" /></p>
+    <EntryList entries={entries} emptyKey="documents.empty" />
+  </main>
+</Base>

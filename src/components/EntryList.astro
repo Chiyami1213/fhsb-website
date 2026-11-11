@@ -1,0 +1,39 @@
+---
+import T from './T.astro';
+import type { Entry } from '../lib/entries';
+interface Props {
+  entries: Entry[];
+  emptyKey?: string;
+}
+const { entries, emptyKey = 'music.empty' } = Astro.props;
+const fmt = (d: Date) => d.toISOString().slice(0, 10);
+---
+
+{
+  entries.length === 0 ? (
+    <p class="empty">
+      <T k={emptyKey} />
+    </p>
+  ) : (
+    <ul class="entry-list">
+      {entries.map((e) => (
+        <li class="entry-card">
+          <h3>
+            <a href={`/entries/${e.id}/`}>{e.data.title}</a>
+          </h3>
+          <div class="meta">{fmt(e.data.date)}</div>
+          {e.data.description && <p>{e.data.description}</p>}
+          {e.data.tags.length > 0 && (
+            <div class="chips">
+              {e.data.tags.map((t) => (
+                <a class="chip" href={`/tags/${encodeURIComponent(t)}/`}>
+                  {t}
+                </a>
+              ))}
+            </div>
+          )}
+        </li>
+      ))}
+    </ul>
+  )
+}

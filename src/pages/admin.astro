@@ -1,0 +1,165 @@
+---
+import Base from '../layouts/Base.astro';
+import { getEntries } from '../lib/entries';
+// Locked files declared in entries (ids + labels are not secret; the links are).
+const entries = await getEntries();
+const lockedFiles = entries.flatMap((e) => e.data.locked.map((l) => ({ id: l.id, label: l.label })));
+---
+
+<Base title="Admin" noindex>
+  <main class="page" id="admin" data-locked={JSON.stringify(lockedFiles)}>
+    <h1>Admin</h1>
+
+    <form id="login" novalidate>
+      <div class="field">
+        <label for="pw">Password</label>
+        <input id="pw" type="password" autocomplete="current-password" />
+      </div>
+      <button class="btn" type="submit">Sign in</button>
+      <p class="msg-err" id="login-err" role="alert"></p>
+    </form>
+
+    <div id="panel" hidden>
+      <p><button class="btn ghost" id="refresh" type="button">Refresh</button></p>
+
+      <h2>Requests</h2>
+      <div id="requests"></div>
+
+      <h2>Download links</h2>
+      <p class="muted">
+        Paste a share link (https://…) for each file. A link is only shown to a visitor after you approve
+        their request. Leave empty and save to remove.
+      </p>
+      <div id="links"></div>
+      <p class="msg-err" id="panel-err" role="alert"></p>
+    </div>
+  </main>
+</Base>
+
+<script>
+  const root = document.getElementById('admin')!;
+  const loginForm = document.getElementById('login') as HTMLFormElement;
+  const loginErr = document.getElementById('login-err')!;
+  const panel = document.getElementById('panel')!;
+  const panelErr = document.getElementById('panel-err')!;
+  const reqBox = document.getElementById('requests')!;
+  const linkBox = document.getElementById('links')!;
+  const lockedFiles: { id: string; label: string }[] = JSON.parse(root.dataset.locked || '[]');
+  let password = '';
+
+  type Req = {
+    token: string;
+    id: string;
+    fileLabel: string;
+    name: string;
+    email: string;
+    reason: string;
+    status: string;
+    created: number;
+  };
+
+  async function api(path: string, body?: unknown) {
+    const res = await fetch('/api/admin/' + path, {
+      method: body === undefined ? 'GET' : 'POST',
+      headers: {
+        Authorization: 'Bearer ' + password,
+        ...(body === undefined ? {} : { 'Content-Type': 'application/json' }),
+      },
+      body: body === undefined ? undefined : JSON.stringify(body),
+    });
+    if (!res.ok) throw new Error(String(res.status));
+    return res.json();
+  }
+
+  function el<K extends keyof HTMLElementTagNameMap>(tag: K, text = '', cls = '') {
+    const e = document.createElement(tag);
+    if (text) e.textContent = text; // never innerHTML with user data
+    if (cls) e.className = cls;
+    return e;
+  }
+
+  function button(label: string, onClick: () => void, ghost = true) {
+    const b = el('button', label, ghost ? 'btn ghost' : 'btn');
+    b.type = 'button';
+    b.style.marginRight = '8px';
+    b.addEventListener('click', onClick);
+    return b;
+  }
+
+  async function act(fn: () => Promise<unknown>) {
+    panelErr.textContent = '';
+    try {
+      await fn();
+      await load();
+    } catch {
+      panelErr.textContent = 'Request failed.';
+    }
+  }
+
+  function renderRequests(requests: Req[]) {
+    reqBox.replaceChildren();
+    if (requests.length === 0) {
+      reqBox.append(el('p', 'No requests.', 'empty'));
+      return;
+    }
+    for (const r of requests) {
+      const card = el('div', '', 'entry-card');
+      card.style.marginBottom = '10px';
+      card.append(el('strong', `${r.name} <${r.email}>`));
+      card.append(el('div', `${r.fileLabel} (${r.id}) · ${new Date(r.created).toLocaleString()} · ${r.status}`, 'meta'));
+      if (r.reason) card.append(el('p', r.reason));
+      const row = el('div');
+      row.style.marginTop = '8px';
+      row.append(
+        button('Approve', () => act(() => api('decide', { token: r.token, decision: 'approve' })), false),
+        button('Decline', () => act(() => api('decide', { token: r.token, decision: 'decline' }))),
+        button('Delete', () => {
+          if (confirm(`Delete the request from ${r.name}?`)) act(() => api('delete', { token: r.token }));
+        }),
+      );
+      card.append(row);
+      reqBox.append(card);
+    }
+  }
+
+  function renderLinks(links: Record<string, string>, requests: Req[]) {
+    linkBox.replaceChildren();
+    const known = new Map<string, string>();
+    for (const f of lockedFiles) known.set(f.id, f.label);
+    for (const r of requests) if (!known.has(r.id)) known.set(r.id, r.fileLabel);
+    for (const id of Object.keys(links)) if (!known.has(id)) known.set(id, id);
+    for (const [id, label] of known) {
+      const field = el('div', '', 'field');
+      const lab = el('label', `${label} (${id})`);
+      const input = el('input');
+      input.type = 'url';
+      input.placeholder = 'https://…';
+      input.value = links[id] || '';
+      const save = button('Save', () => act(() => api('link', { id, url: input.value.trim() })), false);
+      save.style.width = 'fit-content';
+      field.append(lab, input, save);
+      linkBox.append(field);
+    }
+  }
+
+  async function load() {
+    const data = await api('list');
+    renderRequests(data.requests);
+    renderLinks(data.links, data.requests);
+  }
+
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    loginErr.textContent = '';
+    password = (document.getElementById('pw') as HTMLInputElement).value;
+    try {
+      await load();
+      loginForm.hidden = true;
+      panel.hidden = false;
+    } catch {
+      password = '';
+      loginErr.textContent = 'Unauthorized';
+    }
+  });
+  document.getElementById('refresh')!.addEventListener('click', () => act(async () => {}));
+</script>

@@ -1,0 +1,266 @@
+---
+import '../styles/global.css';
+import Icon from '../components/Icon.astro';
+import { DICT, en } from '../i18n/dict';
+import { SITE, NAV_TOP, NAV_BOTTOM, EASTER_EGG_URL } from '../config';
+
+interface Props {
+  /** dictionary key for the page title (translated) */
+  titleKey?: string;
+  /** literal title (not translated), e.g. an entry title */
+  title?: string;
+  description?: string;
+  noindex?: boolean;
+}
+const { titleKey, title, description, noindex = false } = Astro.props;
+const path = Astro.url.pathname;
+const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+const pageTitle = titleKey ? `${en(titleKey)} · ${SITE.short}` : title ? `${title} · ${SITE.short}` : `${SITE.titleZh} ${SITE.titleEn}`;
+const metaDesc = description ?? `${SITE.titleZh} ${SITE.titleEn} (${SITE.short})`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={metaDesc} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {
+      titleKey ? (
+        <title data-i18n={titleKey} data-i18n-suffix={` · ${SITE.short}`}>{pageTitle}</title>
+      ) : (
+        <title>{pageTitle}</title>
+      )
+    }
+
+    <!-- 1. theme: applied before first paint -->
+    <script is:inline>
+      (function () {
+        try {
+          var v = localStorage.getItem('fhsb-theme');
+          if (v === 'light' || v === 'dark') document.documentElement.setAttribute('data-theme', v);
+        } catch (e) {}
+      })();
+    </script>
+
+    <!-- 2. language: window.t / window.setLang -->
+    <script define:vars={{ DICT }}>
+      (function () {
+        var LANGS = { en: 'en', zh: 'zh-TW' };
+        var CODES = { en: 'EN', zh: 'CN' };
+        var KEY = 'fhsb-lang';
+        var cur = 'en';
+        try {
+          var s = localStorage.getItem(KEY);
+          if (s && Object.prototype.hasOwnProperty.call(LANGS, s)) cur = s;
+        } catch (e) {}
+        var root = document.documentElement;
+        root.lang = LANGS[cur];
+        if (cur !== 'en') {
+          root.classList.add('i18n-pending');
+          setTimeout(function () {
+            root.classList.remove('i18n-pending');
+          }, 1500);
+        }
+        function t(key, vars) {
+          var e = DICT[key];
+          var s = e ? e[cur] || e.en : key;
+          if (vars) {
+            s = s.replace(/\{(\w+)\}/g, function (m, k) {
+              return Object.prototype.hasOwnProperty.call(vars, k) ? vars[k] : m;
+            });
+          }
+          return s;
+        }
+        function all(attr) {
+          return document.querySelectorAll('[' + attr + ']');
+        }
+        function apply() {
+          all('data-i18n').forEach(function (el) {
+            el.textContent = t(el.getAttribute('data-i18n')) + (el.getAttribute('data-i18n-suffix') || '');
+          });
+          all('data-i18n-html').forEach(function (el) {
+            el.innerHTML = t(el.getAttribute('data-i18n-html'));
+          });
+          all('data-i18n-placeholder').forEach(function (el) {
+            el.setAttribute('placeholder', t(el.getAttribute('data-i18n-placeholder')));
+          });
+          all('data-i18n-title').forEach(function (el) {
+            el.setAttribute('title', t(el.getAttribute('data-i18n-title')));
+          });
+          all('data-i18n-label').forEach(function (el) {
+            el.setAttribute('aria-label', t(el.getAttribute('data-i18n-label')));
+          });
+          var code = document.getElementById('langcode');
+          if (code) code.textContent = CODES[cur];
+          all('data-lang').forEach(function (el) {
+            el.setAttribute('aria-checked', el.getAttribute('data-lang') === cur ? 'true' : 'false');
+          });
+          root.lang = LANGS[cur];
+          root.classList.remove('i18n-pending');
+        }
+        function setLang(l) {
+          if (!Object.prototype.hasOwnProperty.call(LANGS, l)) return;
+          cur = l;
+          try {
+            localStorage.setItem(KEY, l);
+          } catch (e) {}
+          apply();
+          document.dispatchEvent(new CustomEvent('langchange', { detail: { lang: l } }));
+        }
+        window.t = t;
+        window.setLang = setLang;
+        window.getLang = function () {
+          return cur;
+        };
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply);
+        else apply();
+      })();
+    </script>
+
+    <!-- 3. loading screen: first visit of a session + every reload, never on /admin -->
+    <script is:inline>
+      (function () {
+        try {
+          if (/^\/admin(\/|$)/.test(location.pathname)) return;
+          var nav = performance.getEntriesByType('navigation')[0];
+          var reload = !!nav && nav.type === 'reload';
+          if (!reload && sessionStorage.getItem('fhsb-seen')) return;
+          sessionStorage.setItem('fhsb-seen', '1');
+          var d = document.documentElement;
+          d.classList.add('loading');
+          setTimeout(function () {
+            d.classList.add('open');
+          }, 2000);
+          setTimeout(function () {
+            d.classList.remove('loading');
+            d.classList.remove('open');
+            var l = document.getElementById('loader');
+            if (l) l.remove();
+          }, 3000);
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="shell">
+      <button class="burger" id="burger" type="button" aria-controls="rail" aria-expanded="false" data-i18n-label="menu.open" aria-label={en('menu.open')}>
+        <Icon name="menu" />
+      </button>
+      <div class="backdrop" id="backdrop"></div>
+
+      <aside class="rail" id="rail" data-i18n-label="menu.aria" aria-label={en('menu.aria')}>
+        <nav>
+          {
+            [NAV_TOP, NAV_BOTTOM].map((list, i) => (
+              <ul class={i === 0 ? 'nav top' : 'nav bottom'}>
+                {list.map((item) => (
+                  <li class:list={['item', { current: isCurrent(item.href), 'has-sub': !!item.children }]}>
+                    <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+                      <Icon name={item.icon} />
+                      <span class="lbl" data-i18n={item.label}>{en(item.label)}</span>
+                    </a>
+                    {item.children && (
+                      <ul class="sub">
+                        {item.children.map((c) => (
+                          <li>
+                            <a href={c.href} aria-current={path.startsWith(c.href) ? 'page' : undefined}>
+                              {c.logo ? (
+                                <span class="logo" style={`--logo:url(${c.logo})`} />
+                              ) : (
+                                <span class="dot" />
+                              )}
+                              <span data-i18n={c.label}>{en(c.label)}</span>
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            ))
+          }
+        </nav>
+      </aside>
+
+      <div class="lang" id="lang">
+        <button class="langbtn" id="langbtn" type="button" aria-haspopup="true" aria-expanded="false" data-i18n-label="lang.aria" aria-label={en('lang.aria')}>
+          <Icon name="globe" />
+          <span id="langcode">EN</span>
+        </button>
+        <ul class="langmenu" id="langmenu" role="menu" hidden>
+          <li><button type="button" role="menuitemradio" data-lang="en" aria-checked="true">English</button></li>
+          <li><button type="button" role="menuitemradio" data-lang="zh" aria-checked="false">中文（Mandarin）</button></li>
+        </ul>
+      </div>
+
+      <div class="content">
+        <slot />
+      </div>
+    </div>
+
+    <div class="loader" id="loader" aria-hidden="true">
+      <div class="panel l"></div>
+      <div class="panel r"></div>
+      <div class="center">
+        {
+          EASTER_EGG_URL ? (
+            <a class="egg" href={EASTER_EGG_URL} target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">
+              <Icon name="note" class="char" />
+            </a>
+          ) : (
+            <Icon name="note" class="char" />
+          )
+        }
+        <div class="ltext">
+          <div class="greet" data-i18n="loader.greet">{en('loader.greet')}</div>
+          <div class="now">Now Loading<span class="dots"><i>.</i><i>.</i><i>.</i></span></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const $ = (id: string) => document.getElementById(id)!;
+      const rail = $('rail');
+      const burger = $('burger');
+      const backdrop = $('backdrop');
+      function setRail(open: boolean) {
+        rail.classList.toggle('open', open);
+        backdrop.classList.toggle('show', open);
+        burger.setAttribute('aria-expanded', String(open));
+      }
+      burger.addEventListener('click', () => setRail(!rail.classList.contains('open')));
+      backdrop.addEventListener('click', () => setRail(false));
+
+      const langbtn = $('langbtn');
+      const langmenu = $('langmenu');
+      function setMenu(open: boolean) {
+        langmenu.hidden = !open;
+        langbtn.setAttribute('aria-expanded', String(open));
+      }
+      langbtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setMenu(langmenu.hidden);
+      });
+      langmenu.querySelectorAll<HTMLElement>('[data-lang]').forEach((b) =>
+        b.addEventListener('click', () => {
+          (window as any).setLang(b.dataset.lang);
+          setMenu(false);
+        }),
+      );
+      document.addEventListener('click', (e) => {
+        if (!langmenu.hidden && !langmenu.contains(e.target as Node)) setMenu(false);
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          setRail(false);
+          setMenu(false);
+        }
+      });
+    </script>
+  </body>
+</html>

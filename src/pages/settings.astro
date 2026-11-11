@@ -1,0 +1,61 @@
+---
+import Base from '../layouts/Base.astro';
+import T from '../components/T.astro';
+import Icon from '../components/Icon.astro';
+const themes = [
+  { v: 'light', icon: 'sun', label: 'theme.light' },
+  { v: 'dark', icon: 'moon', label: 'theme.dark' },
+  { v: 'system', icon: 'monitor', label: 'theme.system' },
+];
+---
+
+<Base titleKey="settings.title">
+  <main class="page">
+    <h1><T k="settings.title" /></h1>
+
+    <h2><T k="settings.theme" /></h2>
+    <div class="tiles" role="radiogroup" id="themes">
+      {
+        themes.map((t) => (
+          <label>
+            <input type="radio" name="theme" value={t.v} />
+            <span class="tile">
+              <Icon name={t.icon} />
+              <T k={t.label} />
+            </span>
+          </label>
+        ))
+      }
+    </div>
+
+    <h2><T k="help.title" /></h2>
+    <ul class="help">
+      <li><T k="help.menu" /></li>
+      <li><T k="help.lang" /></li>
+      <li><T k="help.search" /></li>
+      <li><T k="help.locked" /></li>
+    </ul>
+  </main>
+</Base>
+
+<script>
+  const KEY = 'fhsb-theme';
+  const radios = document.querySelectorAll<HTMLInputElement>('#themes input');
+  let saved = 'system';
+  try {
+    const v = localStorage.getItem(KEY);
+    if (v === 'light' || v === 'dark') saved = v;
+  } catch {}
+  radios.forEach((r) => {
+    r.checked = r.value === saved;
+    r.addEventListener('change', () => {
+      const root = document.documentElement;
+      if (r.value === 'system') root.removeAttribute('data-theme');
+      else root.setAttribute('data-theme', r.value);
+      try {
+        if (r.value === 'system') localStorage.removeItem(KEY);
+        else localStorage.setItem(KEY, r.value);
+      } catch {}
+    });
+  });
+</script>
