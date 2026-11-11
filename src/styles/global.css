@@ -120,7 +120,7 @@ p {
   --r-fg: #cfcfd8;
   --r-hi: #ffffff;
   --r-line: #2a2a33;
-  --r-accent: #e5737f;
+  --r-accent: #6f6bcc; /* logo purple */
   position: fixed;
   inset: 0 auto 0 0;
   width: var(--rail-w);
