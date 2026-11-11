@@ -20,9 +20,6 @@ export const DICT: Record<string, Entry> = {
   'lang.aria': { en: 'Language', zh: '語言' },
   'site.suffix': { en: 'FHSB', zh: 'FHSB' },
 
-  // ---- loading screen ----
-  'loader.greet': { en: 'Welcome', zh: '歡迎光臨' },
-
   // ---- about ----
   'about.title': { en: 'About', zh: '關於我們' },
   'about.p1': {

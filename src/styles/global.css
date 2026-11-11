@@ -426,21 +426,9 @@ html.loading.open .loader .center {
 }
 .ltext .now {
   white-space: nowrap;
-}
-.ltext .greet {
-  display: none;
-  font-family: var(--sans);
+  /* gothic (sans) style, matching the Chinese text on the site */
+  font-family: 'Yu Gothic', 'Hiragino Sans', 'Noto Sans JP', 'Meiryo', var(--sans);
   font-weight: 700;
-  font-size: 1.15rem;
-}
-html[lang='zh-TW'] .ltext {
-  align-items: flex-start;
-}
-html[lang='zh-TW'] .ltext .greet {
-  display: block;
-}
-html[lang='zh-TW'] .ltext .now {
-  margin-left: 2.4em;
 }
 .dots i {
   font-style: normal;
