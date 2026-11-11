@@ -28,7 +28,8 @@ const metaDesc = description ?? `${SITE.titleZh} ${SITE.titleEn} (${SITE.short})
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={metaDesc} />
     {(noindex || !ALLOW_SEARCH_INDEXING) && <meta name="robots" content="noindex, nofollow, noarchive" />}
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/png" href="/favicon-256.png" sizes="256x256" />
     {
       titleKey ? (
         <title data-i18n={titleKey} data-i18n-suffix={` · ${SITE.short}`}>{pageTitle}</title>
