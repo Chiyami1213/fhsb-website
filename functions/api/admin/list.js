@@ -1,8 +1,9 @@
 // GET /api/admin/list -> { requests: [...], links: { fileId: url } }   (admin only)
-import { json, unauthorized, isAdmin, getRequest, listKeys } from '../../_lib/util.js';
+import { json, guard, getRequest, listKeys } from '../../_lib/util.js';
 
 export async function onRequestGet({ request, env }) {
-  if (!(await isAdmin(request, env))) return unauthorized();
+  const denied = await guard(request, env);
+  if (denied) return denied;
   if (!env.ARCHIVE) return json({ error: 'unavailable' }, 503);
 
   const requests = [];

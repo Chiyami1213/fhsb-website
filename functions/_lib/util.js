@@ -64,6 +64,43 @@ export async function isAdmin(request, env) {
   return safeEqual(m[1], secret);
 }
 
+export const MAX_FAILS = 3; // wrong-password attempts allowed...
+export const LOCK_SECONDS = 15 * 60; // ...before that visitor is locked out for this long
+
+export function locked() {
+  return new Response('Too many attempts. Try again later.', { status: 429, headers: NO_STORE });
+}
+
+async function visitorKey(request) {
+  // Hash the IP so no raw address is stored; the record disappears when the lock expires.
+  const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+  const h = await sha256(ip);
+  return 'fail:' + [...h].map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+/**
+ * Admin gate. Returns null when the password is right, otherwise the Response to send:
+ * 401 Unauthorized for a wrong/missing password or missing secret (all identical),
+ * 429 once a visitor has used up MAX_FAILS attempts. While locked, even the correct
+ * password is refused until the lock expires.
+ */
+export async function guard(request, env) {
+  const kv = env && env.ARCHIVE;
+  let key = '';
+  let fails = 0;
+  if (kv) {
+    key = await visitorKey(request);
+    fails = parseInt((await kv.get(key)) || '0', 10) || 0;
+    if (fails >= MAX_FAILS) return locked();
+  }
+  if (await isAdmin(request, env)) {
+    if (kv && fails > 0) await kv.delete(key);
+    return null;
+  }
+  if (kv) await kv.put(key, String(fails + 1), { expirationTtl: LOCK_SECONDS });
+  return unauthorized();
+}
+
 /** Persist a request record, keeping its original 90-day expiry. */
 export function putRequest(env, token, record) {
   const minExp = Math.floor(Date.now() / 1000) + 60;

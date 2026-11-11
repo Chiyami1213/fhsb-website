@@ -1,8 +1,9 @@
 // POST /api/admin/delete { token }   (admin only) - removes one request only.
-import { json, unauthorized, isAdmin, readJson, TOKEN_RE } from '../../_lib/util.js';
+import { json, guard, readJson, TOKEN_RE } from '../../_lib/util.js';
 
 export async function onRequestPost({ request, env }) {
-  if (!(await isAdmin(request, env))) return unauthorized();
+  const denied = await guard(request, env);
+  if (denied) return denied;
   if (!env.ARCHIVE) return json({ error: 'unavailable' }, 503);
 
   const body = await readJson(request);

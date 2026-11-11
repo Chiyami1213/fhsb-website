@@ -186,3 +186,60 @@ test('responses are never cacheable', async () => {
   const un = await listGet({ request: new Request('https://x.test/a'), env });
   assert.equal(un.headers.get('Cache-Control'), 'no-store');
 });
+
+// ---- admin lockout: 3 wrong attempts per visitor ----
+const tryList = (env, pw, ip = '1.1.1.1') =>
+  listGet({
+    request: new Request('https://x.test/a', {
+      headers: { 'CF-Connecting-IP': ip, ...(pw === null ? {} : { Authorization: `Bearer ${pw}` }) },
+    }),
+    env,
+  });
+
+test('lockout: 3 wrong attempts allowed, then even the correct password is refused (429)', async () => {
+  const env = { ARCHIVE: fakeKV(), ADMIN_PASSWORD: PW };
+  for (let i = 0; i < 3; i++) {
+    const res = await tryList(env, 'wrong');
+    assert.equal(res.status, 401, `attempt ${i + 1}`);
+    assert.equal(await res.text(), 'Unauthorized');
+  }
+  const locked = await tryList(env, PW); // correct password, but locked
+  assert.equal(locked.status, 429);
+  assert.equal((await tryList(env, 'wrong')).status, 429);
+  assert.equal((await tryList(env, null)).status, 429);
+});
+
+test('lockout: applies to every admin route, and lock expires after 15 minutes', async () => {
+  const env = { ARCHIVE: fakeKV(), ADMIN_PASSWORD: PW };
+  for (let i = 0; i < 3; i++) await tryList(env, 'wrong');
+  const h = { 'CF-Connecting-IP': '1.1.1.1', ...admin };
+  for (const route of [decidePost, linkPost, deletePost]) {
+    const res = await route({ request: post({}, h), env });
+    assert.equal(res.status, 429);
+  }
+  const failKey = [...env.ARCHIVE.m.keys()].find((k) => k.startsWith('fail:'));
+  assert.ok(failKey, 'counter stored');
+  assert.ok(!failKey.includes('1.1.1.1'), 'raw IP is not stored');
+  assert.equal(env.ARCHIVE.m.get(failKey).opts.expirationTtl, 900);
+  env.ARCHIVE.m.delete(failKey); // what KV does when the TTL runs out
+  assert.equal((await tryList(env, PW)).status, 200);
+});
+
+test('lockout: a correct login resets the counter; other visitors are not affected', async () => {
+  const env = { ARCHIVE: fakeKV(), ADMIN_PASSWORD: PW };
+  await tryList(env, 'wrong');
+  await tryList(env, 'wrong');
+  assert.equal((await tryList(env, PW)).status, 200); // success resets
+  assert.equal([...env.ARCHIVE.m.keys()].filter((k) => k.startsWith('fail:')).length, 0);
+  for (let i = 0; i < 3; i++) assert.equal((await tryList(env, 'wrong')).status, 401);
+  assert.equal((await tryList(env, 'wrong')).status, 429);
+  assert.equal((await tryList(env, PW, '2.2.2.2')).status, 200); // different visitor
+});
+
+test('lockout: counts even when the secret is not configured, and never touches request data', async () => {
+  const env = { ARCHIVE: fakeKV() }; // no ADMIN_PASSWORD
+  for (let i = 0; i < 3; i++) assert.equal((await tryList(env, 'x')).status, 401);
+  assert.equal((await tryList(env, 'x')).status, 429);
+  const { data } = await submit(env);
+  assert.equal((await status(env, data.token)).status, 200); // visitors unaffected by admin lock
+});

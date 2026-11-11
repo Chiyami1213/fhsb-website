@@ -50,6 +50,8 @@ Files: `functions/api/*.js` (+ `functions/_lib/util.js`). One KV namespace bound
    (the admin's own address; with Resend's free tier and no domain it can only email you).
 5. **Deployments → Retry deployment** so the bindings apply.
 
+**Admin lockout:** after 3 wrong password attempts a visitor is locked out of `/admin/` for 15 minutes (even the correct password is refused until it expires). Counted per visitor (hashed IP, stored in KV), so a stranger cannot lock you out. Change `MAX_FAILS` / `LOCK_SECONDS` in `functions/_lib/util.js`. If you lock yourself out, wait 15 minutes or delete the `fail:…` key in the KV namespace.
+
 Visitors cannot be emailed: after requesting, they get a private `/request-status/?t=…` page to
 bookmark. An approved visitor could forward the share link; for sensitive files, share directly to
 their email in Google Drive instead.

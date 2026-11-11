@@ -156,9 +156,12 @@ const lockedFiles = entries.flatMap((e) => e.data.locked.map((l) => ({ id: l.id,
       await load();
       loginForm.hidden = true;
       panel.hidden = false;
-    } catch {
+    } catch (err) {
       password = '';
-      loginErr.textContent = 'Unauthorized';
+      loginErr.textContent =
+        (err as Error).message === '429'
+          ? 'Too many wrong attempts. Locked for 15 minutes.'
+          : 'Unauthorized';
     }
   });
   document.getElementById('refresh')!.addEventListener('click', () => act(async () => {}));
