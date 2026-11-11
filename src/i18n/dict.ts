@@ -8,7 +8,7 @@ export const DICT: Record<string, Entry> = {
   'nav.about': { en: 'About', zh: '關於我們' },
   'nav.history': { en: 'History', zh: '樂團沿革' },
   'nav.news': { en: 'News', zh: '最新消息' },
-  'nav.concerts': { en: 'Concerts', zh: '演出典藏' },
+  'nav.concerts': { en: 'Archive', zh: '演出典藏' },
   'nav.music': { en: 'Music', zh: '音樂' },
   'nav.music.repertoire': { en: 'Repertoire', zh: '演出曲目' },
   'nav.music.recordings': { en: 'Recordings', zh: '錄音' },
@@ -47,7 +47,7 @@ export const DICT: Record<string, Entry> = {
   'news.empty': { en: 'No news yet.', zh: '目前還沒有最新消息。' },
 
   // ---- concerts ----
-  'concerts.title': { en: 'Concerts', zh: '演出典藏' },
+  'concerts.title': { en: 'Archive', zh: '演出典藏' },
   'concerts.intro': {
     en: 'Concerts and performances by the band.',
     zh: '樂團的演出典藏。',

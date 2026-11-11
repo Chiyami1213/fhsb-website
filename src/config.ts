@@ -42,7 +42,7 @@ export const NAV_TOP: NavItem[] = [
   { href: '/', label: 'nav.home', icon: 'home' },
   { href: '/about/', label: 'nav.about', icon: 'info' },
   { href: '/news/', label: 'nav.news', icon: 'news' },
-  { href: '/concerts/', label: 'nav.concerts', icon: 'calendar' },
+  { href: '/concerts/', label: 'nav.concerts', icon: 'archive' },
 ];
 export const NAV_BOTTOM: NavItem[] = [
   { href: '/contact/', label: 'nav.contact', icon: 'mail' },
