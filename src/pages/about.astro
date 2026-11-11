@@ -1,13 +1,14 @@
 ---
 import Base from '../layouts/Base.astro';
 import T from '../components/T.astro';
+import AboutTabs from '../components/AboutTabs.astro';
 ---
 
 <Base titleKey="about.title">
   <main class="page">
     <h1><T k="about.title" /></h1>
+    <AboutTabs />
     <p><T k="about.p1" /></p>
     <p><T k="about.p2" /></p>
-    <p><a href="/history/"><T k="about.history" /></a></p>
   </main>
 </Base>

@@ -16,6 +16,12 @@ interface Props {
 const { titleKey, title, description, noindex = false } = Astro.props;
 const path = Astro.url.pathname;
 const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+// an item is "in section" on its own page and on its sub-tabs' pages (keeps the sub-tabs open)
+const inSection = (item: { href: string; children?: { href: string }[] }) =>
+  isCurrent(item.href) || !!item.children?.some((c) => path.startsWith(c.href));
+// drill-down: on a sub-tab page (e.g. History) the menu shows only that section: the parent (About) on top with its
+// sub-tabs under it, and an arrow at the top that goes back to the main menu. Global items (Settings) stay put.
+const section = NAV_TOP.find((it) => it.children?.some((c) => path.startsWith(c.href)));
 const pageTitle = titleKey ? `${en(titleKey)} · ${SITE.short}` : title ? `${title} · ${SITE.short}` : `${SITE.titleZh} ${SITE.titleEn}`;
 const metaDesc = description ?? `${SITE.titleZh} ${SITE.titleEn} (${SITE.short})`;
 ---
@@ -262,14 +268,42 @@ const metaDesc = description ?? `${SITE.titleZh} ${SITE.titleEn} (${SITE.short})
       </button>
       <div class="backdrop" id="backdrop"></div>
 
-      <aside class="rail" id="rail" data-i18n-label="menu.aria" aria-label={en('menu.aria')}>
+      <aside class="rail" id="rail" data-view={section ? 'section' : 'main'} data-i18n-label="menu.aria" aria-label={en('menu.aria')}>
         <nav>
           <div class="rail-toggle" aria-hidden="true"><Icon name="chevrons" /></div>
+          {
+            section && (
+              <>
+                <button class="rail-back" id="rail-back" type="button" data-i18n-label="menu.back" aria-label={en('menu.back')}>
+                  <Icon name="chevrons" />
+                  <span class="lbl" data-i18n="menu.back">{en('menu.back')}</span>
+                </button>
+                <ul class="nav section">
+                  <li class="item">
+                    <a href={section.href}>
+                      <Icon name={section.icon} />
+                      <span class="lbl" data-i18n={section.label}>{en(section.label)}</span>
+                    </a>
+                    <ul class="sub">
+                      {section.children!.map((c) => (
+                        <li>
+                          <a href={c.href} aria-current={path.startsWith(c.href) ? 'page' : undefined}>
+                            <span class="dot" />
+                            <span data-i18n={c.label}>{en(c.label)}</span>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                </ul>
+              </>
+            )
+          }
           {
             [NAV_TOP, NAV_BOTTOM].map((list, i) => (
               <ul class={i === 0 ? 'nav top' : 'nav bottom'}>
                 {list.map((item) => (
-                  <li class:list={['item', { current: isCurrent(item.href), 'has-sub': !!item.children }]}>
+                  <li class:list={['item', { current: inSection(item), 'has-sub': !!item.children, global: !!item.global }]}>
                     <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
                       <Icon name={item.icon} />
                       <span class="lbl" data-i18n={item.label}>{en(item.label)}</span>
@@ -347,6 +381,10 @@ const metaDesc = description ?? `${SITE.titleZh} ${SITE.titleEn} (${SITE.short})
       }
       burger.addEventListener('click', () => setRail(!rail.classList.contains('open')));
       backdrop.addEventListener('click', () => setRail(false));
+      // section view -> back to the main menu (stays on the page)
+      document.getElementById('rail-back')?.addEventListener('click', () => {
+        rail.dataset.view = 'main';
+      });
 
       const langbtn = $('langbtn');
       const langmenu = $('langmenu');

@@ -18,6 +18,7 @@ export const DICT: Record<string, Entry> = {
   'nav.search': { en: 'Search', zh: '搜尋' },
   'menu.open': { en: 'Open menu', zh: '開啟選單' },
   'menu.aria': { en: 'Main menu', zh: '主選單' },
+  'menu.back': { en: 'Main menu', zh: '主選單' },
   'lang.aria': { en: 'Language', zh: '語言' },
   'site.suffix': { en: 'FHSB', zh: 'FHSB' },
 

@@ -989,3 +989,49 @@ dialog::backdrop {
     display: none;
   }
 }
+
+/* ---------- drill-down menu: section view ---------- */
+.rail-back {
+  display: none;
+}
+.rail .nav.section {
+  display: none;
+}
+.rail[data-view='section'] .rail-back {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: none;
+  height: 44px;
+  margin: 0 8px 4px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  color: var(--r-fg);
+  font: inherit;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.rail[data-view='section'] .rail-back:hover {
+  color: var(--r-hi);
+  background: #24242c;
+}
+.rail-back svg {
+  transform: rotate(180deg); /* « */
+}
+.rail[data-view='section'] .nav.section {
+  display: block;
+}
+/* in the section view only the section and the global items (Settings) remain */
+.rail[data-view='section'] .rail-toggle,
+.rail[data-view='section'] .nav.top,
+.rail[data-view='section'] .nav.bottom .item:not(.global) {
+  display: none;
+}
+@media (hover: hover) and (pointer: fine) and (min-width: 641px) {
+  .rail:hover .nav.section .sub,
+  .rail:focus-within .nav.section .sub {
+    max-height: 200px;
+  }
+}

@@ -33,18 +33,25 @@ export interface NavItem {
   label: string; // dictionary key
   icon: string; // key in src/components/icons.ts
   children?: NavChild[];
+  /** stays visible (at the same place) in every menu level, e.g. Settings */
+  global?: boolean;
 }
 
 // To add a menu item: add one line here (and a label key in src/i18n/dict.ts).
-// Pages that exist but are not listed (reachable by URL): /search/, /history/, /music/, /documents/
+// Pages that exist but are not listed (reachable by URL): /search/, /music/, /documents/ (History is a sub-tab of About)
 // To bring one back, add a line such as: { href: '/music/', label: 'nav.music', icon: 'music' },
 export const NAV_TOP: NavItem[] = [
   { href: '/', label: 'nav.home', icon: 'home' },
-  { href: '/about/', label: 'nav.about', icon: 'info' },
+  {
+    href: '/about/',
+    label: 'nav.about',
+    icon: 'info',
+    children: [{ href: '/history/', label: 'nav.history' }],
+  },
   { href: '/news/', label: 'nav.news', icon: 'news' },
   { href: '/concerts/', label: 'nav.concerts', icon: 'archive' },
 ];
 export const NAV_BOTTOM: NavItem[] = [
   { href: '/contact/', label: 'nav.contact', icon: 'mail' },
-  { href: '/settings/', label: 'nav.settings', icon: 'settings' },
+  { href: '/settings/', label: 'nav.settings', icon: 'settings', global: true },
 ];
