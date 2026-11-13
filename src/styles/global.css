@@ -1211,29 +1211,3 @@ dialog::backdrop {
   color: var(--muted);
   font-variant-numeric: tabular-nums;
 }
-
-
-/* alumni: cohort (屆) to graduation-year table */
-.cohorts {
-  margin-top: 0.8rem;
-}
-.cohorts summary {
-  cursor: pointer;
-  color: var(--accent);
-  width: fit-content;
-}
-.cohort-table {
-  border-collapse: collapse;
-  margin-top: 0.6rem;
-  font-variant-numeric: tabular-nums;
-}
-.cohort-table th,
-.cohort-table td {
-  padding: 0.4rem 1.1rem 0.4rem 0;
-  border-bottom: 1px solid var(--line);
-  text-align: left;
-}
-.cohort-table th {
-  color: var(--muted);
-  font-weight: 600;
-}

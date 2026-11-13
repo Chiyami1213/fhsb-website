@@ -16,7 +16,10 @@ export interface Alumnus {
   cohort?: number;
 }
 
-/** Which graduation years a cohort (屆) corresponds to. Add a row when a new cohort graduates. */
+/**
+ * Reference only, NOT shown on the site: which graduation years a cohort (屆) corresponds to
+ * (cohort N: junior high 2013+N, senior high 2016+N). Add a row when a new cohort graduates.
+ */
 export interface CohortYears {
   cohort: number;
   /** 國中畢業 (西元) */

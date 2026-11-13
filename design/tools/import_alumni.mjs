@@ -175,7 +175,8 @@ const lines = people.map((p) => {
 
 // keep everything above the list (model, cohort table) and replace only the ALUMNI array
 const existing = fs.readFileSync(outPath, 'utf8');
-const m = existing.match(/export const ALUMNI: Alumnus\[\] = \[[\s\S]*?\n?\];?/);
+// the whole list: an empty "[];" or everything up to the closing "];" on its own line, plus the stamp comment above it
+const m = existing.match(/(?:\/\/ \d+ people, imported[^\n]*\n)?export const ALUMNI: Alumnus\[\] = \[(?:\];|[\s\S]*?\n\];)/);
 if (!m) {
   console.error('could not find "export const ALUMNI: Alumnus[] = [ ... ];" in ' + outPath);
   process.exit(2);

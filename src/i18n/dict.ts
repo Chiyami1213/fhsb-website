@@ -90,10 +90,6 @@ export const DICT: Record<string, Entry> = {
   'alumni.empty': { en: 'Nothing here yet.', zh: '這裡目前還沒有內容。' },
   'alumni.past.title': { en: 'Alumni', zh: '歷屆校友' },
   'alumni.past.intro': { en: 'Alumni of the band, by instrument. Each name shows the cohort (第幾屆).', zh: '歷屆校友，依樂器分類，姓名後方標示第幾屆。' },
-  'cohort.title': { en: 'Cohorts and graduation years', zh: '屆數對照' },
-  'cohort.num': { en: 'Cohort', zh: '管樂團屆數' },
-  'cohort.junior': { en: 'Junior high graduation', zh: '國中畢業' },
-  'cohort.senior': { en: 'Senior high graduation', zh: '高中畢業' },
   'alumni.past.empty': { en: 'No alumni listed yet.', zh: '目前尚未列出任何校友。' },
 
   // ---- concerts ----
