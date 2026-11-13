@@ -2,10 +2,7 @@
 import Base from '../layouts/Base.astro';
 import T from '../components/T.astro';
 import AboutTabs from '../components/AboutTabs.astro';
-import EntryList from '../components/EntryList.astro';
-import { getEntries, hasTag } from '../lib/entries';
-// members = entries tagged `member`
-const entries = await getEntries((e) => hasTag(e, 'member'));
+import { BANDS, INSTRUMENTS } from '../data/members';
 ---
 
 <Base titleKey="members.title">
@@ -13,6 +10,37 @@ const entries = await getEntries((e) => hasTag(e, 'member'));
     <h1><T k="members.title" /></h1>
     <AboutTabs />
     <p class="muted"><T k="members.intro" /></p>
-    <EntryList entries={entries} emptyKey="members.empty" />
+
+    <!-- jump links to each band -->
+    <div class="chips" style="margin-top:.8rem">
+      {
+        BANDS.map((b) => (
+          <a class="chip" href={`#${b.id}`}><T k={`band.${b.id}`} /></a>
+        ))
+      }
+    </div>
+
+    {
+      BANDS.map((b) => {
+        const total = INSTRUMENTS.reduce((n, i) => n + (b.members[i]?.length ?? 0), 0);
+        return (
+          <section class="band" id={b.id}>
+            <h2><T k={`band.${b.id}`} /></h2>
+            {total === 0 && <p class="muted"><T k="members.empty" /></p>}
+            <div class="inst-grid">
+              {INSTRUMENTS.map((i) => {
+                const names = b.members[i] ?? [];
+                return (
+                  <div class="inst">
+                    <b><T k={`inst.${i}`} /></b>
+                    <span class="who">{names.length > 0 ? names.join('、') : '—'}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        );
+      })
+    }
   </main>
 </Base>

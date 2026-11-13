@@ -53,8 +53,23 @@ export const DICT: Record<string, Entry> = {
 
   // ---- members ----
   'members.title': { en: 'Members', zh: '成員' },
-  'members.intro': { en: 'The people of the band.', zh: '樂團的成員。' },
+  'members.intro': { en: 'The members of the band, by band and instrument.', zh: '樂團成員，依團別與樂器分類。' },
   'members.empty': { en: 'No members listed yet.', zh: '目前尚未列出任何成員。' },
+
+  'band.reserve': { en: 'Preparatory band', zh: '儲備團' },
+  'band.elementary': { en: 'Elementary band', zh: '小學團' },
+  'band.secondary': { en: 'Secondary band', zh: '中學團' },
+  'inst.flute': { en: 'Flute', zh: '長笛' },
+  'inst.oboe': { en: 'Oboe', zh: '雙簧管' },
+  'inst.bassoon': { en: 'Bassoon', zh: '低音管' },
+  'inst.clarinet': { en: 'Clarinet', zh: '單簧管' },
+  'inst.saxophone': { en: 'Saxophone', zh: '薩克斯風' },
+  'inst.trumpet': { en: 'Trumpet', zh: '小號' },
+  'inst.horn': { en: 'French horn', zh: '法國號' },
+  'inst.trombone': { en: 'Trombone', zh: '長號' },
+  'inst.euphonium': { en: 'Euphonium', zh: '上低音號' },
+  'inst.tuba': { en: 'Tuba', zh: '低音號' },
+  'inst.percussion': { en: 'Percussion', zh: '打擊樂' },
 
   // ---- instructors ----
   'instructors.title': { en: 'Faculty', zh: '師資' },

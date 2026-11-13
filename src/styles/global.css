@@ -1141,3 +1141,31 @@ dialog::backdrop {
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
+
+/* members page: bands and instruments */
+.band {
+  margin-top: 2rem;
+  scroll-margin-top: 72px;
+}
+.band h2 {
+  margin-top: 0;
+}
+.inst-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 10px;
+  margin-top: 0.8rem;
+}
+.inst {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+}
+.inst .who {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
