@@ -11,7 +11,7 @@ export const DICT: Record<string, Entry> = {
   'nav.instructors': { en: 'Faculty', zh: '師資' },
   'nav.news': { en: 'News', zh: '最新消息' },
   'nav.alumni': { en: 'Alumni', zh: '校友專區' },
-  'nav.alumni.past': { en: 'Past alumni', zh: '歷屆校友' },
+  'nav.alumni.past': { en: 'Alumni', zh: '歷屆校友' },
   'nav.concerts': { en: 'Archive', zh: '演出典藏' },
   'nav.music': { en: 'Music', zh: '音樂' },
   'nav.music.repertoire': { en: 'Repertoire', zh: '演出曲目' },
@@ -88,7 +88,7 @@ export const DICT: Record<string, Entry> = {
   'alumni.title': { en: 'Alumni', zh: '校友專區' },
   'alumni.intro': { en: 'Information for alumni.', zh: '提供校友的相關資訊。' },
   'alumni.empty': { en: 'Nothing here yet.', zh: '這裡目前還沒有內容。' },
-  'alumni.past.title': { en: 'Past alumni', zh: '歷屆校友' },
+  'alumni.past.title': { en: 'Alumni', zh: '歷屆校友' },
   'alumni.past.intro': { en: 'Alumni of the band, by instrument. Each name shows the cohort (第幾屆).', zh: '歷屆校友，依樂器分類，姓名後方標示第幾屆。' },
   'alumni.past.empty': { en: 'No alumni listed yet.', zh: '目前尚未列出任何校友。' },
 

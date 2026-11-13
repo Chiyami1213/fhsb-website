@@ -2,18 +2,19 @@
 import Base from '../../layouts/Base.astro';
 import T from '../../components/T.astro';
 import AlumniTabs from '../../components/AlumniTabs.astro';
-import InstrumentCards from '../../components/InstrumentCards.astro';
 import { ALUMNI } from '../../data/alumni';
-import { INSTRUMENTS, type Instrument } from '../../data/members';
+import { INSTRUMENTS } from '../../data/members';
 
-// Each alumnus is listed under every instrument they played, as "name（第N屆）", oldest cohort first.
-const people: Partial<Record<Instrument, string[]>> = {};
-for (const i of INSTRUMENTS) {
-  const list = ALUMNI.filter((a) => a.instruments.includes(i)).sort(
+// One section per instrument; inside it the alumni who played it, oldest cohort (屆) first.
+// An alumnus with several instruments appears in each of those sections.
+const byInstrument = INSTRUMENTS.map((id) => ({
+  id,
+  people: ALUMNI.filter((a) => a.instruments.includes(id)).sort(
     (a, b) => a.cohort - b.cohort || a.name.localeCompare(b.name, 'zh-Hant'),
-  );
-  if (list.length > 0) people[i] = list.map((a) => `${a.name}（第${a.cohort}屆）`);
-}
+  ),
+}));
+// Before any alumni are entered every instrument shows (empty); afterwards only instruments that have alumni.
+const shown = ALUMNI.length === 0 ? byInstrument : byInstrument.filter((s) => s.people.length > 0);
 ---
 
 <Base titleKey="alumni.past.title">
@@ -22,6 +23,33 @@ for (const i of INSTRUMENTS) {
     <AlumniTabs />
     <p class="muted"><T k="alumni.past.intro" /></p>
     {ALUMNI.length === 0 && <p class="muted"><T k="alumni.past.empty" /></p>}
-    <InstrumentCards people={people} />
+
+    <!-- jump links to each instrument -->
+    <div class="chips" style="margin-top:.8rem">
+      {shown.map((s) => <a class="chip" href={`#${s.id}`}><T k={`inst.${s.id}`} /></a>)}
+    </div>
+
+    {
+      shown.map((s) => (
+        <section class="band" id={s.id}>
+          <h2 class="inst-h">
+            <span class="inst-ico" aria-hidden="true" style={`--m:url(/images/instruments/${s.id}.png)`} />
+            <T k={`inst.${s.id}`} />
+          </h2>
+          {s.people.length > 0 ? (
+            <ul class="alumni-list">
+              {s.people.map((a) => (
+                <li>
+                  <span class="cohort">第{a.cohort}屆</span>
+                  <span>{a.name}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p class="muted">—</p>
+          )}
+        </section>
+      ))
+    }
   </main>
 </Base>

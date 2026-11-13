@@ -1183,3 +1183,31 @@ dialog::backdrop {
   gap: 2px;
   min-width: 0;
 }
+
+/* alumni page: one section per instrument, alumni listed by cohort (屆) */
+.inst-h {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.inst-h .inst-ico {
+  width: 30px;
+  height: 38px;
+}
+.alumni-list {
+  list-style: none;
+  margin: 0.6rem 0 0;
+  padding: 0;
+}
+.alumni-list li {
+  display: flex;
+  gap: 1em;
+  padding: 0.45rem 0.2rem;
+  border-bottom: 1px solid var(--line);
+}
+.alumni-list .cohort {
+  flex: none;
+  min-width: 4.4em;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
