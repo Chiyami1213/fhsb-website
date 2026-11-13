@@ -1211,3 +1211,29 @@ dialog::backdrop {
   color: var(--muted);
   font-variant-numeric: tabular-nums;
 }
+
+/* 演出典藏: performances grouped by year */
+.perf-year {
+  margin-top: 1.8rem;
+}
+.perf-year h2 {
+  margin-top: 0;
+}
+.perf-list {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+}
+.perf-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 1em;
+  padding: 0.45rem 0.2rem;
+  border-bottom: 1px solid var(--line);
+}
+.perf-list .when {
+  flex: none;
+  min-width: 6.2em;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
