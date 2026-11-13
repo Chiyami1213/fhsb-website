@@ -26,7 +26,8 @@ export const DICT: Record<string, Entry> = {
   'site.suffix': { en: 'FHSB', zh: 'FHSB' },
 
   // ---- about ----
-  'about.title': { en: 'About', zh: '關於復興管樂' },
+  'about.tab': { en: 'Introduction', zh: '簡介' },
+  'about.title':{ en: 'About', zh: '關於復興管樂' },
   'about.p1': {
     en: 'Fuhsing Symphonic Band (FHSB). Add a short introduction to the band here.',
     zh: '復興管樂團（FHSB）。請在此加入樂團的簡短介紹。',
@@ -40,8 +41,8 @@ export const DICT: Record<string, Entry> = {
   // ---- history ----
   'history.title': { en: 'History', zh: '沿革' },
   'history.intro': {
-    en: 'A timeline of the band. Replace these placeholders with real milestones.',
-    zh: '樂團的大事記。請以實際的里程碑取代這些預留文字。',
+    en: 'Important performances and milestones, by school year. Years follow the Republic of China (民國) calendar, not the Gregorian one.',
+    zh: '重要演出經歷與大事記，依學年度排列。年份為民國紀年。',
   },
   'history.item': { en: 'Add a milestone here.', zh: '請在此加入一則里程碑。' },
 

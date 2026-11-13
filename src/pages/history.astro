@@ -2,9 +2,11 @@
 import Base from '../layouts/Base.astro';
 import T from '../components/T.astro';
 import AboutTabs from '../components/AboutTabs.astro';
-// Timeline 2011 -> 2026 (oldest first). Each year shows a placeholder: replace it with that year's real milestone.
-const FIRST_YEAR = 2011;
-const LAST_YEAR = 2026;
+import { HISTORY, FIRST_YEAR, LAST_YEAR } from '../data/history';
+
+// One entry per school year (學年度, Republic of China calendar), oldest first.
+// Years without milestones yet show a placeholder; add them in src/data/history.ts.
+const byYear = new Map(HISTORY.map((h) => [h.year, h.items]));
 const years = Array.from({ length: LAST_YEAR - FIRST_YEAR + 1 }, (_, i) => FIRST_YEAR + i);
 ---
 
@@ -15,12 +17,23 @@ const years = Array.from({ length: LAST_YEAR - FIRST_YEAR + 1 }, (_, i) => FIRST
     <p class="muted"><T k="history.intro" /></p>
     <ul class="timeline">
       {
-        years.map((y) => (
-          <li>
-            <div class="year">{y}</div>
-            <div><T k="history.item" /></div>
-          </li>
-        ))
+        years.map((y) => {
+          const items = byYear.get(y) ?? [];
+          return (
+            <li>
+              <div class="year">{y}學年度</div>
+              {items.length > 0 ? (
+                items.map((m) => (
+                  <div class="event">
+                    <span class="when">{m.date}</span> {m.text}
+                  </div>
+                ))
+              ) : (
+                <div class="muted"><T k="history.item" /></div>
+              )}
+            </li>
+          );
+        })
       }
     </ul>
   </main>

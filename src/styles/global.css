@@ -1127,3 +1127,13 @@ dialog::backdrop {
     max-height: 200px;
   }
 }
+
+/* history: milestones inside a school year */
+.timeline .event {
+  margin: 0.25rem 0;
+}
+.timeline .when {
+  color: var(--muted);
+  margin-right: 0.35em;
+  white-space: nowrap;
+}
