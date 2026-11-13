@@ -1,0 +1,31 @@
+---
+// The Members page layout: jump links to each band, then one section per band with the instrument cards.
+import T from './T.astro';
+import InstrumentCards from './InstrumentCards.astro';
+import { INSTRUMENTS, type Band } from '../data/members';
+
+interface Props {
+  bands: Band[];
+  /** dictionary key shown under a band's heading while it has no names yet */
+  emptyKey: string;
+}
+const { bands, emptyKey } = Astro.props;
+---
+
+<!-- jump links to each band -->
+<div class="chips" style="margin-top:.8rem">
+  {bands.map((b) => <a class="chip" href={`#${b.id}`}><T k={`band.${b.id}`} /></a>)}
+</div>
+
+{
+  bands.map((b) => {
+    const total = INSTRUMENTS.reduce((n, i) => n + (b.members[i]?.length ?? 0), 0);
+    return (
+      <section class="band" id={b.id}>
+        <h2><T k={`band.${b.id}`} /></h2>
+        {total === 0 && <p class="muted"><T k={emptyKey} /></p>}
+        <InstrumentCards people={b.members} />
+      </section>
+    );
+  })
+}

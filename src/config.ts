@@ -54,7 +54,12 @@ export const NAV_TOP: NavItem[] = [
     ],
   },
   { href: '/concerts/', label: 'nav.concerts', icon: 'archive' },
-  { href: '/alumni/', label: 'nav.alumni', icon: 'cap' },
+  {
+    href: '/alumni/',
+    label: 'nav.alumni',
+    icon: 'cap',
+    children: [{ href: '/alumni/past/', label: 'nav.alumni.past' }],
+  },
 ];
 export const NAV_BOTTOM: NavItem[] = [
   { href: '/contact/', label: 'nav.contact', icon: 'mail' },

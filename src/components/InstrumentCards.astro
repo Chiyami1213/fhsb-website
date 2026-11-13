@@ -1,0 +1,28 @@
+---
+// A grid of instrument cards (icon, name, people). Shared by the Members page (per band) and the Alumni page.
+import T from './T.astro';
+import { INSTRUMENTS, type Instrument } from '../data/members';
+
+interface Props {
+  /** display strings per instrument; instruments without people show a dash */
+  people: Partial<Record<Instrument, string[]>>;
+}
+const { people } = Astro.props;
+---
+
+<div class="inst-grid">
+  {
+    INSTRUMENTS.map((i) => {
+      const names = people[i] ?? [];
+      return (
+        <div class="inst">
+          <span class="inst-ico" aria-hidden="true" style={`--m:url(/images/instruments/${i}.png)`} />
+          <span class="inst-txt">
+            <b><T k={`inst.${i}`} /></b>
+            <span class="who">{names.length > 0 ? names.join('、') : '—'}</span>
+          </span>
+        </div>
+      );
+    })
+  }
+</div>

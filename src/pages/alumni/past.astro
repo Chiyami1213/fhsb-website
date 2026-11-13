@@ -1,0 +1,27 @@
+---
+import Base from '../../layouts/Base.astro';
+import T from '../../components/T.astro';
+import AlumniTabs from '../../components/AlumniTabs.astro';
+import InstrumentCards from '../../components/InstrumentCards.astro';
+import { ALUMNI } from '../../data/alumni';
+import { INSTRUMENTS, type Instrument } from '../../data/members';
+
+// Each alumnus is listed under every instrument they played, as "name（第N屆）", oldest cohort first.
+const people: Partial<Record<Instrument, string[]>> = {};
+for (const i of INSTRUMENTS) {
+  const list = ALUMNI.filter((a) => a.instruments.includes(i)).sort(
+    (a, b) => a.cohort - b.cohort || a.name.localeCompare(b.name, 'zh-Hant'),
+  );
+  if (list.length > 0) people[i] = list.map((a) => `${a.name}（第${a.cohort}屆）`);
+}
+---
+
+<Base titleKey="alumni.past.title">
+  <main class="page">
+    <h1><T k="alumni.past.title" /></h1>
+    <AlumniTabs />
+    <p class="muted"><T k="alumni.past.intro" /></p>
+    {ALUMNI.length === 0 && <p class="muted"><T k="alumni.past.empty" /></p>}
+    <InstrumentCards people={people} />
+  </main>
+</Base>

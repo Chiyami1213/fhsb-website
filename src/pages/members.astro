@@ -2,7 +2,8 @@
 import Base from '../layouts/Base.astro';
 import T from '../components/T.astro';
 import AboutTabs from '../components/AboutTabs.astro';
-import { BANDS, INSTRUMENTS } from '../data/members';
+import BandRoster from '../components/BandRoster.astro';
+import { BANDS } from '../data/members';
 ---
 
 <Base titleKey="members.title">
@@ -10,40 +11,6 @@ import { BANDS, INSTRUMENTS } from '../data/members';
     <h1><T k="members.title" /></h1>
     <AboutTabs />
     <p class="muted"><T k="members.intro" /></p>
-
-    <!-- jump links to each band -->
-    <div class="chips" style="margin-top:.8rem">
-      {
-        BANDS.map((b) => (
-          <a class="chip" href={`#${b.id}`}><T k={`band.${b.id}`} /></a>
-        ))
-      }
-    </div>
-
-    {
-      BANDS.map((b) => {
-        const total = INSTRUMENTS.reduce((n, i) => n + (b.members[i]?.length ?? 0), 0);
-        return (
-          <section class="band" id={b.id}>
-            <h2><T k={`band.${b.id}`} /></h2>
-            {total === 0 && <p class="muted"><T k="members.empty" /></p>}
-            <div class="inst-grid">
-              {INSTRUMENTS.map((i) => {
-                const names = b.members[i] ?? [];
-                return (
-                  <div class="inst">
-                    <span class="inst-ico" aria-hidden="true" style={`--m:url(/images/instruments/${i}.png)`} />
-                    <span class="inst-txt">
-                      <b><T k={`inst.${i}`} /></b>
-                      <span class="who">{names.length > 0 ? names.join('、') : '—'}</span>
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-        );
-      })
-    }
+    <BandRoster bands={BANDS} emptyKey="members.empty" />
   </main>
 </Base>
