@@ -1223,11 +1223,9 @@ dialog::backdrop {
 /* ---------- wide screens: lists flow into columns instead of leaving the right side empty ---------- */
 /* alumni: columns fill top to bottom, so a list sorted by cohort still reads in order */
 .alumni-list {
-  column-width: 280px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   column-gap: 2.5rem;
-}
-.alumni-list li {
-  break-inside: avoid;
 }
 /* history / performance archive: each year's events flow into columns under the year heading */
 .timeline li {
