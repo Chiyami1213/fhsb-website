@@ -18,7 +18,7 @@ const fmt = d.date.toISOString().slice(0, 10);
 ---
 
 <Base title={d.title} description={d.description}>
-  <main class="page">
+  <main class="page narrow">
     <p class="meta"><a href="/search/"><T k="entry.back" /></a></p>
     <h1>{d.title}</h1>
     <div class="meta">{fmt} · <T k={`type.${d.type}`} /></div>

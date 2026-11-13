@@ -7,7 +7,7 @@ const lockedFiles = entries.flatMap((e) => e.data.locked.map((l) => ({ id: l.id,
 ---
 
 <Base title="Admin" noindex>
-  <main class="page" id="admin" data-locked={JSON.stringify(lockedFiles)}>
+  <main class="page narrow" id="admin" data-locked={JSON.stringify(lockedFiles)}>
     <h1>Admin</h1>
 
     <form id="login" novalidate>
