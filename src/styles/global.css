@@ -166,6 +166,12 @@ p {
   flex-direction: column;
   height: 100%;
   padding: 8px 0 12px;
+  /* very tall menus scroll instead of being cut off; the scrollbar stays hidden */
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.rail nav::-webkit-scrollbar {
+  display: none;
 }
 .rail ul {
   list-style: none;

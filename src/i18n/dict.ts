@@ -5,8 +5,10 @@ export type Entry = { en: string; zh: string };
 export const DICT: Record<string, Entry> = {
   // ---- navigation ----
   'nav.home': { en: 'Home', zh: '首頁' },
-  'nav.about': { en: 'About', zh: '關於我們' },
-  'nav.history': { en: 'History', zh: '樂團沿革' },
+  'nav.about': { en: 'About', zh: '關於復興管樂' },
+  'nav.history': { en: 'History', zh: '沿革' },
+  'nav.members': { en: 'Members', zh: '成員' },
+  'nav.instructors': { en: 'Instructors', zh: '師資' },
   'nav.news': { en: 'News', zh: '最新消息' },
   'nav.alumni': { en: 'Alumni', zh: '校友專區' },
   'nav.concerts': { en: 'Archive', zh: '演出典藏' },
@@ -24,7 +26,7 @@ export const DICT: Record<string, Entry> = {
   'site.suffix': { en: 'FHSB', zh: 'FHSB' },
 
   // ---- about ----
-  'about.title': { en: 'About', zh: '關於我們' },
+  'about.title': { en: 'About', zh: '關於復興管樂' },
   'about.p1': {
     en: 'Fuhsing Symphonic Band (FHSB). Add a short introduction to the band here.',
     zh: '復興管樂團（FHSB）。請在此加入樂團的簡短介紹。',
@@ -33,10 +35,10 @@ export const DICT: Record<string, Entry> = {
     en: 'Tell visitors who you are, what you play, and when you rehearse.',
     zh: '告訴大家樂團的成員、演奏的曲風，以及練習的時間。',
   },
-  'about.history': { en: 'Band history', zh: '樂團沿革' },
+  'about.history': { en: 'Band history', zh: '沿革' },
 
   // ---- history ----
-  'history.title': { en: 'History', zh: '樂團沿革' },
+  'history.title': { en: 'History', zh: '沿革' },
   'history.intro': {
     en: 'A timeline of the band. Replace these placeholders with real milestones.',
     zh: '樂團的大事記。請以實際的里程碑取代這些預留文字。',
@@ -47,6 +49,16 @@ export const DICT: Record<string, Entry> = {
   'news.title': { en: 'News', zh: '最新消息' },
   'news.intro': { en: 'Latest news from the band.', zh: '樂團的最新消息。' },
   'news.empty': { en: 'No news yet.', zh: '目前還沒有最新消息。' },
+
+  // ---- members ----
+  'members.title': { en: 'Members', zh: '成員' },
+  'members.intro': { en: 'The people of the band.', zh: '樂團的成員。' },
+  'members.empty': { en: 'No members listed yet.', zh: '目前尚未列出任何成員。' },
+
+  // ---- instructors ----
+  'instructors.title': { en: 'Instructors', zh: '師資' },
+  'instructors.intro': { en: 'The band’s instructors.', zh: '樂團的師資陣容。' },
+  'instructors.empty': { en: 'No instructors listed yet.', zh: '目前尚未列出任何師資。' },
 
   // ---- alumni ----
   'alumni.title': { en: 'Alumni', zh: '校友專區' },

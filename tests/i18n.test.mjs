@@ -193,7 +193,7 @@ test('placeholders, {label} variables and attributes are translated', async () =
 
 test('page title is translated and keeps its suffix', async () => {
   const dom = await load('about/index.html', { saved: { 'fhsb-lang': 'zh' } });
-  assert.equal(dom.window.document.title, '關於我們 · FHSB');
+  assert.equal(dom.window.document.title, '關於復興管樂 · FHSB');
   dom.window.close();
 });
 

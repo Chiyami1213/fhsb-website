@@ -1,0 +1,18 @@
+---
+import Base from '../layouts/Base.astro';
+import T from '../components/T.astro';
+import AboutTabs from '../components/AboutTabs.astro';
+import EntryList from '../components/EntryList.astro';
+import { getEntries, hasTag } from '../lib/entries';
+// instructors = entries tagged `instructor`
+const entries = await getEntries((e) => hasTag(e, 'instructor'));
+---
+
+<Base titleKey="instructors.title">
+  <main class="page">
+    <h1><T k="instructors.title" /></h1>
+    <AboutTabs />
+    <p class="muted"><T k="instructors.intro" /></p>
+    <EntryList entries={entries} emptyKey="instructors.empty" />
+  </main>
+</Base>

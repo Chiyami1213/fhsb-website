@@ -42,13 +42,17 @@ export interface NavItem {
 // To bring one back, add a line such as: { href: '/music/', label: 'nav.music', icon: 'music' },
 export const NAV_TOP: NavItem[] = [
   { href: '/', label: 'nav.home', icon: 'home' },
+  { href: '/news/', label: 'nav.news', icon: 'news' },
   {
     href: '/about/',
     label: 'nav.about',
     icon: 'info',
-    children: [{ href: '/history/', label: 'nav.history' }],
+    children: [
+      { href: '/history/', label: 'nav.history' },
+      { href: '/members/', label: 'nav.members' },
+      { href: '/instructors/', label: 'nav.instructors' },
+    ],
   },
-  { href: '/news/', label: 'nav.news', icon: 'news' },
   { href: '/concerts/', label: 'nav.concerts', icon: 'archive' },
   { href: '/alumni/', label: 'nav.alumni', icon: 'cap' },
 ];
