@@ -8,7 +8,7 @@ export const DICT: Record<string, Entry> = {
   'nav.about': { en: 'About', zh: '關於復興管樂' },
   'nav.history': { en: 'History', zh: '沿革' },
   'nav.members': { en: 'Members', zh: '成員' },
-  'nav.instructors': { en: 'Instructors', zh: '師資' },
+  'nav.instructors': { en: 'Faculty', zh: '師資' },
   'nav.news': { en: 'News', zh: '最新消息' },
   'nav.alumni': { en: 'Alumni', zh: '校友專區' },
   'nav.concerts': { en: 'Archive', zh: '演出典藏' },
@@ -56,9 +56,9 @@ export const DICT: Record<string, Entry> = {
   'members.empty': { en: 'No members listed yet.', zh: '目前尚未列出任何成員。' },
 
   // ---- instructors ----
-  'instructors.title': { en: 'Instructors', zh: '師資' },
-  'instructors.intro': { en: 'The band’s instructors.', zh: '樂團的師資陣容。' },
-  'instructors.empty': { en: 'No instructors listed yet.', zh: '目前尚未列出任何師資。' },
+  'instructors.title': { en: 'Faculty', zh: '師資' },
+  'instructors.intro': { en: 'The band’s faculty.', zh: '樂團的師資陣容。' },
+  'instructors.empty': { en: 'No faculty listed yet.', zh: '目前尚未列出任何師資。' },
 
   // ---- alumni ----
   'alumni.title': { en: 'Alumni', zh: '校友專區' },
