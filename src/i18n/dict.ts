@@ -8,6 +8,7 @@ export const DICT: Record<string, Entry> = {
   'nav.about': { en: 'About', zh: '關於我們' },
   'nav.history': { en: 'History', zh: '樂團沿革' },
   'nav.news': { en: 'News', zh: '最新消息' },
+  'nav.alumni': { en: 'Alumni', zh: '校友專區' },
   'nav.concerts': { en: 'Archive', zh: '演出典藏' },
   'nav.music': { en: 'Music', zh: '音樂' },
   'nav.music.repertoire': { en: 'Repertoire', zh: '演出曲目' },
@@ -46,6 +47,11 @@ export const DICT: Record<string, Entry> = {
   'news.title': { en: 'News', zh: '最新消息' },
   'news.intro': { en: 'Latest news from the band.', zh: '樂團的最新消息。' },
   'news.empty': { en: 'No news yet.', zh: '目前還沒有最新消息。' },
+
+  // ---- alumni ----
+  'alumni.title': { en: 'Alumni', zh: '校友專區' },
+  'alumni.intro': { en: 'Information for alumni.', zh: '提供校友的相關資訊。' },
+  'alumni.empty': { en: 'Nothing here yet.', zh: '這裡目前還沒有內容。' },
 
   // ---- concerts ----
   'concerts.title': { en: 'Archive', zh: '演出典藏' },

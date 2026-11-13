@@ -1,0 +1,16 @@
+---
+import Base from '../layouts/Base.astro';
+import T from '../components/T.astro';
+import EntryList from '../components/EntryList.astro';
+import { getEntries, hasTag } from '../lib/entries';
+// Alumni area = entries tagged `alumni`
+const entries = await getEntries((e) => hasTag(e, 'alumni'));
+---
+
+<Base titleKey="alumni.title">
+  <main class="page">
+    <h1><T k="alumni.title" /></h1>
+    <p class="muted"><T k="alumni.intro" /></p>
+    <EntryList entries={entries} emptyKey="alumni.empty" />
+  </main>
+</Base>

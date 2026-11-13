@@ -50,6 +50,7 @@ export const NAV_TOP: NavItem[] = [
   },
   { href: '/news/', label: 'nav.news', icon: 'news' },
   { href: '/concerts/', label: 'nav.concerts', icon: 'archive' },
+  { href: '/alumni/', label: 'nav.alumni', icon: 'cap' },
 ];
 export const NAV_BOTTOM: NavItem[] = [
   { href: '/contact/', label: 'nav.contact', icon: 'mail' },
