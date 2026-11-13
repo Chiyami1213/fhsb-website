@@ -41,8 +41,8 @@ export const DICT: Record<string, Entry> = {
   // ---- history ----
   'history.title': { en: 'History', zh: '沿革' },
   'history.intro': {
-    en: 'Important performances and milestones, by school year. Years follow the Republic of China (民國) calendar, not the Gregorian one.',
-    zh: '重要演出經歷與大事記，依學年度排列。年份為民國紀年。',
+    en: 'Important performances and milestones of the band.',
+    zh: '重要演出經歷與大事記。',
   },
   'history.item': { en: 'Add a milestone here.', zh: '請在此加入一則里程碑。' },
 

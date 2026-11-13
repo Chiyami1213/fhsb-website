@@ -1128,12 +1128,16 @@ dialog::backdrop {
   }
 }
 
-/* history: milestones inside a school year */
+/* history: milestones inside a year */
 .timeline .event {
+  display: flex;
+  align-items: baseline;
   margin: 0.25rem 0;
 }
 .timeline .when {
+  flex: none;
+  min-width: 3.6em;
   color: var(--muted);
-  margin-right: 0.35em;
   white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }

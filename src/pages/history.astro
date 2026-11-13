@@ -4,7 +4,7 @@ import T from '../components/T.astro';
 import AboutTabs from '../components/AboutTabs.astro';
 import { HISTORY, FIRST_YEAR, LAST_YEAR } from '../data/history';
 
-// One entry per school year (學年度, Republic of China calendar), oldest first.
+// One entry per calendar year (西元), oldest first.
 // Years without milestones yet show a placeholder; add them in src/data/history.ts.
 const byYear = new Map(HISTORY.map((h) => [h.year, h.items]));
 const years = Array.from({ length: LAST_YEAR - FIRST_YEAR + 1 }, (_, i) => FIRST_YEAR + i);
@@ -21,7 +21,7 @@ const years = Array.from({ length: LAST_YEAR - FIRST_YEAR + 1 }, (_, i) => FIRST
           const items = byYear.get(y) ?? [];
           return (
             <li>
-              <div class="year">{y}學年度</div>
+              <div class="year">{y}</div>
               {items.length > 0 ? (
                 items.map((m) => (
                   <div class="event">
