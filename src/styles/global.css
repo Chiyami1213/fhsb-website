@@ -149,6 +149,7 @@ p {
   --r-fg: #cfcfd8;
   --r-hi: #ffffff;
   --r-line: #2a2a33;
+  --r-guide: #41414d; /* grey vertical guide line of the sub-tabs */
   --r-accent: #726ccf; /* logo purple */
   position: fixed;
   inset: 0 auto 0 0;
@@ -228,29 +229,33 @@ p {
   transition: opacity 0.15s ease;
 }
 .sub {
+  position: relative;
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.25s ease;
 }
+/* grey vertical guide line directly under the parent icon; the sub-tabs hang off it */
+.sub::before {
+  content: '';
+  position: absolute;
+  left: 26px;
+  top: 8px;
+  bottom: 6px;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--r-guide);
+}
 .sub a {
   height: 40px;
-  gap: 14px;
-  padding-left: 50px;
-  margin-top: 2px;
+  gap: 12px;
+  margin: 2px 0 0 38px;
+  padding: 0 16px;
+  border-radius: 10px;
   font-size: 0.92rem;
 }
 .sub a[aria-current='page'] {
   color: var(--r-hi);
   background: #24242c;
-}
-.sub .dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: currentColor;
-  flex: none;
-  margin-left: 2px;
-  margin-right: 2px;
 }
 .sub .logo {
   width: 20px;

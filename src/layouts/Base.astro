@@ -332,7 +332,6 @@ const metaDesc = description ?? `${SITE.titleZh} ${SITE.titleEn} (${SITE.short})
                       {section.children!.map((c) => (
                         <li>
                           <a href={c.href} aria-current={path.startsWith(c.href) ? 'page' : undefined}>
-                            <span class="dot" />
                             <span data-i18n={c.label}>{en(c.label)}</span>
                           </a>
                         </li>
@@ -357,11 +356,7 @@ const metaDesc = description ?? `${SITE.titleZh} ${SITE.titleEn} (${SITE.short})
                         {item.children.map((c) => (
                           <li>
                             <a href={c.href} aria-current={path.startsWith(c.href) ? 'page' : undefined}>
-                              {c.logo ? (
-                                <span class="logo" style={`--logo:url(${c.logo})`} />
-                              ) : (
-                                <span class="dot" />
-                              )}
+                              {c.logo && <span class="logo" style={`--logo:url(${c.logo})`} />}
                               <span data-i18n={c.label}>{en(c.label)}</span>
                             </a>
                           </li>
