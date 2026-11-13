@@ -5,8 +5,8 @@ import EntryList from '../components/EntryList.astro';
 import { getEntries, hasTag } from '../lib/entries';
 import { PERFORMANCES } from '../data/concerts';
 
-// 演出典藏: the performance list (src/data/concerts.ts) grouped by year, oldest first,
-// then any detailed entries tagged `concert`.
+// 演出典藏: same timeline as 沿革 (one entry per year, oldest first), listing the performances of src/data/concerts.ts.
+// Only years that have performances are shown. Detailed entries tagged `concert` follow below.
 const sorted = [...PERFORMANCES].sort((a, b) => a.date.localeCompare(b.date));
 const years = [...new Set(sorted.map((p) => p.date.slice(0, 4)))];
 const md = (iso: string) => iso.slice(5).replace('-', '/'); // "2016-07-06" -> "07/06"
@@ -20,29 +20,24 @@ const entries = await getEntries((e) => hasTag(e, 'concert'));
     <h1><T k="concerts.title" /></h1>
     <p class="muted"><T k="concerts.intro" /></p>
 
-    {
-      sorted.length === 0 && (
-        <p class="empty"><T k="concerts.empty" /></p>
-      )
-    }
+    {sorted.length === 0 && <p class="empty"><T k="concerts.empty" /></p>}
 
-    {
-      years.map((y) => (
-        <section class="perf-year">
-          <h2>{y}</h2>
-          <ul class="perf-list">
+    <ul class="timeline">
+      {
+        years.map((y) => (
+          <li>
+            <div class="year">{y}</div>
             {sorted
               .filter((p) => p.date.startsWith(y))
               .map((p) => (
-                <li>
-                  <span class="when">{when(p)}</span>
-                  <span>{p.name}</span>
-                </li>
+                <div class="event">
+                  <span class="when">{when(p)}</span> {p.name}
+                </div>
               ))}
-          </ul>
-        </section>
-      ))
-    }
+          </li>
+        ))
+      }
+    </ul>
 
     {entries.length > 0 && <EntryList entries={entries} emptyKey="concerts.empty" />}
   </main>

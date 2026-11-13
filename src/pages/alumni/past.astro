@@ -2,15 +2,15 @@
 import Base from '../../layouts/Base.astro';
 import T from '../../components/T.astro';
 import AlumniTabs from '../../components/AlumniTabs.astro';
-import { ALUMNI } from '../../data/alumni';
+import { ALUMNI, COHORTS } from '../../data/alumni';
 import { INSTRUMENTS } from '../../data/members';
 
 // One section per instrument; inside it the alumni who played it, oldest cohort (屆) first.
-// An alumnus with several instruments appears in each of those sections.
+// An alumnus with several instruments appears in each of those sections. People without a cohort come last.
 const byInstrument = INSTRUMENTS.map((id) => ({
   id,
   people: ALUMNI.filter((a) => a.instruments.includes(id)).sort(
-    (a, b) => a.cohort - b.cohort || a.name.localeCompare(b.name, 'zh-Hant'),
+    (a, b) => (a.cohort ?? 9999) - (b.cohort ?? 9999) || a.name.localeCompare(b.name, 'zh-Hant'),
   ),
 }));
 // Before any alumni are entered every instrument shows (empty); afterwards only instruments that have alumni.
@@ -23,6 +23,29 @@ const shown = ALUMNI.length === 0 ? byInstrument : byInstrument.filter((s) => s.
     <AlumniTabs />
     <p class="muted"><T k="alumni.past.intro" /></p>
     {ALUMNI.length === 0 && <p class="muted"><T k="alumni.past.empty" /></p>}
+
+    <!-- which graduation years each cohort (屆) corresponds to -->
+    <details class="cohorts">
+      <summary><T k="cohort.title" /></summary>
+      <table class="cohort-table">
+        <thead>
+          <tr>
+            <th><T k="cohort.num" /></th>
+            <th><T k="cohort.junior" /></th>
+            <th><T k="cohort.senior" /></th>
+          </tr>
+        </thead>
+        <tbody>
+          {COHORTS.map((c) => (
+            <tr>
+              <td>第{c.cohort}屆</td>
+              <td>{c.junior}</td>
+              <td>{c.senior}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </details>
 
     <!-- jump links to each instrument -->
     <div class="chips" style="margin-top:.8rem">
@@ -40,7 +63,7 @@ const shown = ALUMNI.length === 0 ? byInstrument : byInstrument.filter((s) => s.
             <ul class="alumni-list">
               {s.people.map((a) => (
                 <li>
-                  <span class="cohort">第{a.cohort}屆</span>
+                  <span class="cohort">{a.cohort ? `第${a.cohort}屆` : '—'}</span>
                   <span>{a.name}</span>
                 </li>
               ))}
