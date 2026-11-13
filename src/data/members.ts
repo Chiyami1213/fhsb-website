@@ -6,18 +6,25 @@
 // Instrument ids and their EN / 中文 labels are in src/i18n/dict.ts (keys inst.<id>).
 // To add or remove an instrument, edit INSTRUMENTS below (and add its label to the dictionary).
 
-/** shown in this order on the page */
+/** shown in this order on the page (woodwinds, brass, double bass, percussion). Icons: public/images/instruments/<id>.png */
 export const INSTRUMENTS = [
+  'piccolo',
   'flute',
   'oboe',
   'bassoon',
+  'eb-clarinet',
   'clarinet',
-  'saxophone',
+  'bass-clarinet',
+  'soprano-saxophone',
+  'alto-saxophone',
+  'tenor-saxophone',
+  'baritone-saxophone',
   'trumpet',
   'horn',
   'trombone',
   'euphonium',
   'tuba',
+  'double-bass',
   'percussion',
 ] as const;
 export type Instrument = (typeof INSTRUMENTS)[number];

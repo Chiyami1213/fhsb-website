@@ -32,8 +32,11 @@ import { BANDS, INSTRUMENTS } from '../data/members';
                 const names = b.members[i] ?? [];
                 return (
                   <div class="inst">
-                    <b><T k={`inst.${i}`} /></b>
-                    <span class="who">{names.length > 0 ? names.join('、') : '—'}</span>
+                    <span class="inst-ico" aria-hidden="true" style={`--m:url(/images/instruments/${i}.png)`} />
+                    <span class="inst-txt">
+                      <b><T k={`inst.${i}`} /></b>
+                      <span class="who">{names.length > 0 ? names.join('、') : '—'}</span>
+                    </span>
                   </div>
                 );
               })}
